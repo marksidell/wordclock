@@ -1,0 +1,30 @@
+'''
+Read a text file consisting of a letter grid and print
+all cases where a sequence of two rows have the same
+letter in any columns.
+'''
+import sys
+
+def main():
+    ''' do it
+    '''
+    grid = [line.strip() for line in open(sys.argv[1], 'r')]
+    dim = len(grid)
+
+    if any(len(row) != dim for row in grid):
+        print('ERROR: The grid is not square')
+        sys.exit(1)
+
+    for row in range(dim-1):
+        row_a = grid[row]
+        row_b = grid[row+1]
+        collisions = [row_a[col] == row_b[col] for col in range(dim)]
+
+        if any(collisions):
+            print('   ' + ''.join('|' if collision else ' ' for collision in collisions))
+            print('{:>2} {}'.format(row, row_a))
+            print('{:>2} {}'.format(row+1, row_b))
+
+
+if __name__ == "__main__":
+    main()

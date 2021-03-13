@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<title>{title}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="w3.css"">
+<script src="/jquery.min.js"></script>
+<script src="/script.js"></script>
+<body>
+<div class="w3-container w3-blue">
+<h4 id="title">{title}</h4>
+</div>
+<div class="w3-container w3-teal">
+	<div class="w3-cell">
+		<table>
+			<tr>
+				<td><label for="display_mode">Display Mode:&nbsp;</label></td>
+				<td>
+					<select class="w3-input" id="display_mode" name="display_mode" onchange="changeDisplayMode()">
+						<option value="CLOCK">Clock</option>
+						<option value="RANDOM_WORDS">Random Words</option>
+						<option value="DEMO">Fast Clock Demo</option>
+						<option value="DEMO_BIRTHDAY">Happy Birthday</option>
+					</select>
+				</td>
+			</tr>
+			<tr><td>Web Site:&nbsp;</td><td>http://<span id="server_ip"></span></td></tr>
+			<tr><td>Ambient:&nbsp;</td><td><span id="cur_ambient">9943</span> lumens</td></tr>
+			<tr><td>Brightness:&nbsp;</td><td><span id="cur_brightness">99</span> %</td></tr>
+			<tr><td>Up:&nbsp;</td><td><span id="cur_orientation"></span></td></tr>
+			<tr><td>Compass:&nbsp;</td><td><span id="cur_angle"></span> &deg; (Sunrise <span id="sunrise_orientation"></span>)</td></tr>
+		</table>
+	</div>
+</div>
+<div class="w3-panel">
+   <div class="w3-container w3-cell">
+     <button id="save" class="w3-btn w3-pink" onclick="save()">Save</button>
+	</div>
+   <div hidden id="save_msg_div" class="w3-cell w3-cell-middle"><span id="save_msg"></span></div>
+</div>
+<div class="w3-panel">
+	<div class="w3-container">
+		<label class="w3-text-blue" for="ssid"><b>WiFi SSID</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="ssid" name="ssid"
+		  type="text" maxlength="63" onchange="changeSsid()">
+		<div hidden id="err_ssid" class="w3-container w3-red"><span id="errmsg_ssid"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="password"><b>WiFi Password</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="password" name="password"
+		  type="text" maxlength="63" onchange=changePassword()>
+		<div hidden id="err_password" class="w3-container w3-red"><span id="errmsg_password"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="lat"><b>Latitude</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="lat" name="lat"
+		  type="text" maxlength="20" placeholder="Example: 35.912" onchange="changeLat()">
+		<div hidden id="err_lat" class="w3-container w3-red"><span id="errmsg_lat"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="lat"><b>Longitude</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="lon" name="lon"
+		  type="text" maxlength="20" placeholder="Example: -79.123", onchange="changeLon()">
+		<div hidden id="err_lon" class="w3-container w3-red"><span id="errmsg_lon"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="min_light"><b>Min Ambient Light</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="min_light" name="min_light"
+		  type="text" maxlength="10" placeholder="0 - 50000", onchange="changeMinLight()">
+		<div hidden id="err_min_light" class="w3-container w3-red"><span id="errmsg_min_light"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="max_light"><b>Max Ambient Light</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="max_light" name="max_light"
+		  type="text" maxlength="10" placeholder="0 - 50000", onchange="changeMaxLight()">
+		<div hidden id="err_max_light" class="w3-container w3-red"><span id="errmsg_max_light"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="min_brightness"><b>Min Brightness</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="min_brightness" name="min_brightness"
+		  type="text" maxlength="10" placeholder="0 - 100", onchange="changeMinBrightness()">
+		<div hidden id="err_min_brightness" class="w3-container w3-red"><span id="errmsg_min_brightness"></span></div>
+	</div>
+		<div class="w3-container">
+		<label class="w3-text-blue" for="max_brightness"><b>Max Brightness</b></label>
+		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="max_brightness" name="max_brightness"
+		  type="text" maxlength="10" placeholder="0 - 100", onchange="changeMaxBrightness()">
+		<div hidden id="err_max_brightness" class="w3-container w3-red"><span id="errmsg_max_brightness"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="sunrise"><b>Sunrise Direction</b></label>
+		<select class="w3-input w3-border" id="sunrise" name="sunrise" onchange="changeSunrise()">
+			<option value="compass">Use Compass</option>
+			<option value="left">Left Side</option>
+			<option value="right">Right Side</option>
+		</select>
+	</div>
+</div>
+<div class="w3-container w3-cell">
+  <button class="w3-btn w3-purple" onclick="showFutz()">Futz With Brightness</button>
+</div>
+<div class="w3-container w3-blue-grey w3-margin-top">
+  Version <span id="version"></span>
+</div>
+<div id="futz" class="w3-modal">
+	<div class="w3-modal-content">
+		<header class="w3-container w3-purple">
+			<span onclick="hideFutz()"
+			   class="w3-button w3-display-topright">&times;
+			</span>
+			<h4>Futz With Brightness</h4>
+		</header>
+		<div class="w3-panel" width="100%">
+			<input id="brightness" type="range" width="100%" onchange="futz()">
+			<span id="brightness_value">100</span> %
+		</div>
+		<div class="w3-panel">
+			<select class="w3-input w3-border" id="futzdisplay" name="futzdisplay" onchange="futz()">
+				<option value="noon">Noon</option>
+				<option value="midnight">Midnight</option>
+			</select>
+		</div>
+		<div class="w3-panel">
+			<button class="w3-btn w3-pink" onclick="setMinBrightness()">Set Min Brightness</button>
+		</div>
+		<div class="w3-panel">
+			<button class="w3-btn w3-pink" onclick="setMaxBrightness()">Set Max Brightness</button>
+		</div>
+		<footer class="w3-container"></footer>
+	</div>
+</div>
+</body>
+</html>

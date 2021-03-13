@@ -1,0 +1,796 @@
+{
+    "CURVE_OBJECTS": [
+        {
+            "behavior": 1,
+            "corner_type": 0,
+            "cp1": [
+                [
+                    129.05,
+                    -8
+                ],
+                [
+                    129.05,
+                    -8
+                ],
+                [
+                    129.05,
+                    -13
+                ],
+                [
+                    122.05000000000001,
+                    -13
+                ],
+                [
+                    122.05000000000001,
+                    -8
+                ],
+                [
+                    129.05,
+                    -8
+                ]
+            ],
+            "cp2": [
+                [
+                    129.05,
+                    -8
+                ],
+                [
+                    129.05,
+                    -13
+                ],
+                [
+                    122.05000000000001,
+                    -13
+                ],
+                [
+                    122.05000000000001,
+                    -8
+                ],
+                [
+                    129.05,
+                    -8
+                ],
+                [
+                    129.05,
+                    -8
+                ]
+            ],
+            "group_id": [
+            ],
+            "height": 5,
+            "id": "{50cd2f8b-1a87-4717-b4b6-292007d26d5c}",
+            "num_sides": 6,
+            "point_type": [
+                0,
+                3,
+                3,
+                3,
+                3,
+                4
+            ],
+            "points": [
+                [
+                    129.05,
+                    -8
+                ],
+                [
+                    129.05,
+                    -13
+                ],
+                [
+                    122.05000000000001,
+                    -13
+                ],
+                [
+                    122.05000000000001,
+                    -8
+                ],
+                [
+                    129.05,
+                    -8
+                ],
+                [
+                    129.05,
+                    -8
+                ]
+            ],
+            "position": [
+                108,
+                36
+            ],
+            "radius": 3.5,
+            "rotation": 0,
+            "smooth": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "width": 7
+        },
+        {
+            "behavior": 3,
+            "corner_type": 0,
+            "cp1": [
+                [
+                    13,
+                    -12
+                ],
+                [
+                    8,
+                    -9.238576251
+                ],
+                [
+                    15.761423749000002,
+                    -7
+                ],
+                [
+                    18,
+                    -14.761423749
+                ],
+                [
+                    10.238576250999998,
+                    -17
+                ],
+                [
+                    13,
+                    -12
+                ]
+            ],
+            "cp2": [
+                [
+                    13,
+                    -12
+                ],
+                [
+                    10.238576250999998,
+                    -7
+                ],
+                [
+                    18,
+                    -9.238576251
+                ],
+                [
+                    15.761423749000002,
+                    -17
+                ],
+                [
+                    8,
+                    -14.761423749
+                ],
+                [
+                    13,
+                    -12
+                ]
+            ],
+            "group_id": [
+            ],
+            "height": 3.39519326574e-313,
+            "id": "{35e8891d-843d-40be-b3dd-58aa9b1e27f8}",
+            "num_sides": 6,
+            "point_type": [
+                0,
+                3,
+                3,
+                3,
+                3,
+                4
+            ],
+            "points": [
+                [
+                    8,
+                    -12
+                ],
+                [
+                    13,
+                    -7
+                ],
+                [
+                    18,
+                    -12
+                ],
+                [
+                    13,
+                    -17
+                ],
+                [
+                    8,
+                    -12
+                ],
+                [
+                    13,
+                    -12
+                ]
+            ],
+            "position": [
+                54,
+                42
+            ],
+            "radius": 5,
+            "rotation": 0,
+            "smooth": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "width": 6.3659873724e-314
+        },
+        {
+            "behavior": 3,
+            "corner_type": 0,
+            "cp1": [
+                [
+                    -51,
+                    -8.5
+                ],
+                [
+                    -54.5,
+                    -6.567003375700001
+                ],
+                [
+                    -49.0670033757,
+                    -5
+                ],
+                [
+                    -47.5,
+                    -10.4329966243
+                ],
+                [
+                    -52.9329966243,
+                    -12
+                ],
+                [
+                    -51,
+                    -8.5
+                ]
+            ],
+            "cp2": [
+                [
+                    -51,
+                    -8.5
+                ],
+                [
+                    -52.9329966243,
+                    -5
+                ],
+                [
+                    -47.5,
+                    -6.567003375700001
+                ],
+                [
+                    -49.0670033757,
+                    -12
+                ],
+                [
+                    -54.5,
+                    -10.4329966243
+                ],
+                [
+                    -51,
+                    -8.5
+                ]
+            ],
+            "group_id": [
+            ],
+            "height": 1.35807730624e-312,
+            "id": "{a076f264-00a7-4e24-8d13-aae9c1087e7b}",
+            "num_sides": 6,
+            "point_type": [
+                0,
+                3,
+                3,
+                3,
+                3,
+                4
+            ],
+            "points": [
+                [
+                    -54.5,
+                    -8.5
+                ],
+                [
+                    -51,
+                    -5
+                ],
+                [
+                    -47.5,
+                    -8.5
+                ],
+                [
+                    -51,
+                    -12
+                ],
+                [
+                    -54.5,
+                    -8.5
+                ],
+                [
+                    -51,
+                    -8.5
+                ]
+            ],
+            "position": [
+                118,
+                38.5
+            ],
+            "radius": 3.5,
+            "rotation": 0,
+            "smooth": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "width": 6.3659873724e-314
+        },
+        {
+            "behavior": 1,
+            "corner_type": 0,
+            "cp1": [
+                [
+                    64.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    1
+                ],
+                [
+                    42.55000000000001,
+                    1
+                ],
+                [
+                    42.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    8
+                ]
+            ],
+            "cp2": [
+                [
+                    64.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    1
+                ],
+                [
+                    42.55000000000001,
+                    1
+                ],
+                [
+                    42.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    8
+                ]
+            ],
+            "group_id": [
+            ],
+            "height": 7,
+            "id": "{99e7b1f6-f09b-41f8-9d87-8c9a50804155}",
+            "num_sides": 6,
+            "point_type": [
+                0,
+                3,
+                3,
+                3,
+                3,
+                4
+            ],
+            "points": [
+                [
+                    64.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    1
+                ],
+                [
+                    42.55000000000001,
+                    1
+                ],
+                [
+                    42.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    8
+                ],
+                [
+                    64.55000000000001,
+                    8
+                ]
+            ],
+            "position": [
+                180,
+                42
+            ],
+            "radius": 6.35,
+            "rotation": 0,
+            "smooth": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "width": 22
+        },
+        {
+            "behavior": 1,
+            "corner_type": 0,
+            "cp1": [
+                [
+                    150,
+                    12
+                ],
+                [
+                    150,
+                    12
+                ],
+                [
+                    150,
+                    -12
+                ],
+                [
+                    -150,
+                    -12
+                ],
+                [
+                    -150,
+                    12
+                ],
+                [
+                    150,
+                    12
+                ]
+            ],
+            "cp2": [
+                [
+                    150,
+                    12
+                ],
+                [
+                    150,
+                    -12
+                ],
+                [
+                    -150,
+                    -12
+                ],
+                [
+                    -150,
+                    12
+                ],
+                [
+                    150,
+                    12
+                ],
+                [
+                    150,
+                    12
+                ]
+            ],
+            "group_id": [
+            ],
+            "height": 24,
+            "id": "{e0b841bf-a3b1-42cb-9af3-3bf2396d31de}",
+            "num_sides": 6,
+            "point_type": [
+                0,
+                1,
+                1,
+                1,
+                1,
+                4
+            ],
+            "points": [
+                [
+                    150,
+                    12
+                ],
+                [
+                    150,
+                    -12
+                ],
+                [
+                    -150,
+                    -12
+                ],
+                [
+                    -150,
+                    12
+                ],
+                [
+                    150,
+                    12
+                ],
+                [
+                    150,
+                    12
+                ]
+            ],
+            "position": [
+                150,
+                12
+            ],
+            "radius": 6.35,
+            "rotation": 0,
+            "smooth": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "width": 300
+        }
+    ],
+    "DOCUMENT_VALUES": {
+        "BACKGROUND_IMAGE": "AAAAAYlQTkcNChoKAAAADUlIRFIAAAABAAAAAQgAAAAAOn6bVQAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAApJREFUCJljYAAAAAIAAfRxZKYAAAAASUVORK5CYII=",
+        "BACKGROUND_OPACITY": 0.5,
+        "BACKGROUND_POSITION_X": 0,
+        "BACKGROUND_POSITION_Y": 0,
+        "BACKGROUND_ROTATION": 0,
+        "BACKGROUND_SCALE": 1,
+        "BACKGROUND_VISIBLE": false,
+        "DISPLAYMM": true,
+        "HEIGHT": 49,
+        "MACHINE": "Shapeoko 3",
+        "MACHINE_TYPE": "Shapeoko",
+        "MATERIAL": "Acrylic",
+        "RETRACT": 12.7,
+        "THICKNESS": 6.4,
+        "WIDTH": 324,
+        "ZERO_X": 0,
+        "ZERO_Y": 0,
+        "ZERO_Z": 0,
+        "build_num": 520,
+        "grid_enabled": true,
+        "grid_spacing": 6,
+        "minimum_build_num": 500,
+        "version": 1
+    },
+    "REQUIRES_PRO": false,
+    "TEXT_OBJECTS": [
+    ],
+    "TOOLPATH_GROUP_OBJECTS": [
+        {
+            "TOOLPATH_OBJECTS": [
+                {
+                    "angle": 0,
+                    "automatic_parameters": true,
+                    "elements": [
+                        {
+                            "uuid": "{50cd2f8b-1a87-4717-b4b6-292007d26d5c}"
+                        }
+                    ],
+                    "enabled": true,
+                    "end_depth": 6.4,
+                    "name": "power cord",
+                    "speeds": {
+                        "feedrate": 812.8,
+                        "plungerate": 254,
+                        "rpm": 10000
+                    },
+                    "start_depth": 0,
+                    "stepdown": 0.508,
+                    "stepover": 0.999,
+                    "stock_to_leave": 0,
+                    "tolerance": 0.01,
+                    "tool": {
+                        "angle": 0,
+                        "corner_radius": 0,
+                        "diameter": 1.99898,
+                        "display_mm": false,
+                        "finish_allowance": 0.2032,
+                        "flutes": 1,
+                        "length": 6.35,
+                        "model": "282Z",
+                        "name": "",
+                        "number": 282,
+                        "overall_length": 3.175,
+                        "plungerate": 254,
+                        "read_only": true,
+                        "slot_depth": 0.508,
+                        "slot_feedrate": 812.8,
+                        "slot_rpm": 10000,
+                        "surfacing_feedrate": 812.8,
+                        "surfacing_rpm": 10000,
+                        "surfacing_stepover": 15,
+                        "type": 0,
+                        "url": "https://shop.carbide3d.com/products/282z-2mm-single-flute-zrn",
+                        "uuid": "{00000000-0000-0000-0000-000000000000}",
+                        "vendor": "Carbide 3D"
+                    },
+                    "type": "pocket_toolpath",
+                    "uuid": "{0bf5d592-c68b-460b-b69c-941df4c7530b}"
+                },
+                {
+                    "angle": 0,
+                    "automatic_parameters": true,
+                    "elements": [
+                        {
+                            "uuid": "{35e8891d-843d-40be-b3dd-58aa9b1e27f8}"
+                        }
+                    ],
+                    "enabled": true,
+                    "end_depth": 3,
+                    "name": "button clearance",
+                    "speeds": {
+                        "feedrate": 812.8,
+                        "plungerate": 254,
+                        "rpm": 10000
+                    },
+                    "start_depth": 0,
+                    "stepdown": 0.508,
+                    "stepover": 0.99949,
+                    "stock_to_leave": 0,
+                    "tolerance": 0.01,
+                    "tool": {
+                        "angle": 0,
+                        "corner_radius": 0,
+                        "diameter": 1.99898,
+                        "display_mm": false,
+                        "finish_allowance": 0.2032,
+                        "flutes": 1,
+                        "length": 6.35,
+                        "model": "282Z",
+                        "name": "",
+                        "number": 282,
+                        "overall_length": 3.175,
+                        "plungerate": 254,
+                        "read_only": true,
+                        "slot_depth": 0.508,
+                        "slot_feedrate": 812.8,
+                        "slot_rpm": 10000,
+                        "surfacing_feedrate": 812.8,
+                        "surfacing_rpm": 10000,
+                        "surfacing_stepover": 15,
+                        "type": 0,
+                        "url": "https://shop.carbide3d.com/products/282z-2mm-single-flute-zrn",
+                        "uuid": "{00000000-0000-0000-0000-000000000000}",
+                        "vendor": "Carbide 3D"
+                    },
+                    "type": "pocket_toolpath",
+                    "uuid": "{7cfa28f0-1323-4132-8d33-0498d4e96dce}"
+                },
+                {
+                    "angle": 0,
+                    "automatic_parameters": true,
+                    "elements": [
+                        {
+                            "uuid": "{a076f264-00a7-4e24-8d13-aae9c1087e7b}"
+                        }
+                    ],
+                    "enabled": true,
+                    "end_depth": 6.4,
+                    "name": "button hole",
+                    "speeds": {
+                        "feedrate": 812.8,
+                        "plungerate": 254,
+                        "rpm": 10000
+                    },
+                    "start_depth": 3,
+                    "stepdown": 0.508,
+                    "stepover": 0.99949,
+                    "stock_to_leave": 0,
+                    "tolerance": 0.01,
+                    "tool": {
+                        "angle": 0,
+                        "corner_radius": 0,
+                        "diameter": 1.99898,
+                        "display_mm": false,
+                        "finish_allowance": 0.2032,
+                        "flutes": 1,
+                        "length": 6.35,
+                        "model": "282Z",
+                        "name": "",
+                        "number": 282,
+                        "overall_length": 3.175,
+                        "plungerate": 254,
+                        "read_only": true,
+                        "slot_depth": 0.508,
+                        "slot_feedrate": 812.8,
+                        "slot_rpm": 10000,
+                        "surfacing_feedrate": 812.8,
+                        "surfacing_rpm": 10000,
+                        "surfacing_stepover": 15,
+                        "type": 0,
+                        "url": "https://shop.carbide3d.com/products/282z-2mm-single-flute-zrn",
+                        "uuid": "{00000000-0000-0000-0000-000000000000}",
+                        "vendor": "Carbide 3D"
+                    },
+                    "type": "pocket_toolpath",
+                    "uuid": "{2215d6e1-33f2-443d-8abf-d04835681131}"
+                },
+                {
+                    "angle": 0,
+                    "automatic_parameters": true,
+                    "elements": [
+                        {
+                            "uuid": "{99e7b1f6-f09b-41f8-9d87-8c9a50804155}"
+                        }
+                    ],
+                    "enabled": true,
+                    "end_depth": 6.4,
+                    "name": "sensor slot",
+                    "speeds": {
+                        "feedrate": 762,
+                        "plungerate": 304.8,
+                        "rpm": 10000
+                    },
+                    "start_depth": 0,
+                    "stepdown": 0.508,
+                    "stepover": 0.999,
+                    "stock_to_leave": 0,
+                    "tolerance": 0.01,
+                    "tool": {
+                        "angle": 0,
+                        "corner_radius": 0,
+                        "diameter": 1.99898,
+                        "display_mm": false,
+                        "finish_allowance": 0.2032,
+                        "flutes": 1,
+                        "length": 6.35,
+                        "model": "282Z",
+                        "name": "",
+                        "number": 282,
+                        "overall_length": 3.175,
+                        "plungerate": 304.79999999999995,
+                        "read_only": true,
+                        "slot_depth": 0.508,
+                        "slot_feedrate": 762,
+                        "slot_rpm": 10000,
+                        "surfacing_feedrate": 889,
+                        "surfacing_rpm": 10000,
+                        "surfacing_stepover": 15,
+                        "type": 0,
+                        "url": "https://shop.carbide3d.com/products/282z-2mm-single-flute-zrn",
+                        "uuid": "{00000000-0000-0000-0000-000000000000}",
+                        "vendor": "Carbide 3D"
+                    },
+                    "type": "pocket_toolpath",
+                    "uuid": "{d982fedf-201e-4b74-8457-508655e4444f}"
+                }
+            ],
+            "enabled": true,
+            "name": "Group 1",
+            "uuid": "{16b880fc-f57b-48bb-93a8-9e328d17bd9b}"
+        }
+    ]
+}
+
+
+
+
+MODELV1
+
+
+
+xEá1 0ƒûï´áJ©¨*¿pÅÜÁé,IƒıG^º/GvÀ'Ã

@@ -1,0 +1,8 @@
+# Public keys for SSH login to the pi account.
+# You'll want to replace these with your own keys.
+
+# me
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGVdclnPyA3n1FaXwH9V/ju+bZ/Phspod7HpW/y9Z7kbHGelrsbKLXuVho63iVX0E6OmYnmverU3AWag+qRL0gOJACQLela3U/3JlOH636VYehVlhRcnev1auGCZ4jvFiNfL2e5ZBWYbmGD3Z53gFg2C9yrzg+Eedpx5SjjPoa00pEQ/B4c79KoFYqHoUzOJrM8eGeLABdHFelZkndnDkTLSkmaBfwkFOqScxPWAf/fGSS0fLC3ndrKFlVBPpAiEDROrvAm1TXuvMh58lxcfq24SSw9rAtZ5XuAjirqKUWCo4Tv+HimQEUJETG5lTDIybzhtKJ5njMZhr/RBWcorxP
+
+# A key I generated just for logging into the word clock, which I can share with the clock owners.
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUWJBjzuW6GbpS+Dq54uSLJdAghNIWH/GsaNL8hoIrfYg/lrdmy+bMz5aiIwNTaYR1E9oYKXEOG3RzETTe3izdD1wFkvD22G/z888WNk/DlaYRsy/pMuBH++z/hFMpgoROSxrkfNOCfwfOW2zRRjGwZ1HIqvFPBl5Jx7Zlcsdts5qbw6m6cyfPHGASqrpW+b0piti1raa66AJzVVVB1kAjKyTuTvCEWTwCDjcHW6+NXkHoXFgO94hRa94qRYY/8VInVZjwBdlmaHp+i28RgWRY4AIlfOtRpV9pwgPE5OyxncnwxSAOFbksQDPbe2YfOGOi6GRowbsXwQ3qJD95/L1Z

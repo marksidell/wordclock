@@ -1,0 +1,30 @@
+{
+  "Version":"2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowListingOfClockUpdateFolder",
+      "Action": ["s3:ListBucket"],
+      "Effect": "Allow",
+      "Resource": ["arn:aws:s3:::<your-bucket-name>"],
+      "Condition":{"StringLike":{"s3:prefix":
+                  [
+                       "update/${aws:username}/*",
+                       "update/${aws:username}"
+                  ]
+               }
+        }
+    },
+    {
+       "Sid": "AllowUpdateRetrieval",
+       "Action":["s3:GetObject"],
+       "Effect":"Allow",
+       "Resource": ["arn:aws:s3:::<your-bucket-name>/update/${aws:username}/*"]
+    },
+    {
+       "Sid": "AllowLogWrites",
+       "Action":["s3:PutObject"],
+       "Effect":"Allow",
+       "Resource": ["arn:aws:s3:::<your-bucket-name>/logs/${aws:username}/*"]
+    }
+  ]
+}

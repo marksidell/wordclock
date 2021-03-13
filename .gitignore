@@ -1,0 +1,7 @@
+*~
+wordclock.egg-info
+wordclock/__pycache__
+wordclock/config.py
+wordclock/timestamp.txt
+wordclock/s3config.py
+fp-info-cache

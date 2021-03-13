@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name neopixels)(type KiCad)(uri ${KIPRJMOD}/../neopixels.pretty)(options "")(descr ""))
+)

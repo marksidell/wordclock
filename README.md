@@ -20,7 +20,6 @@ See the `README` file in each directory for more information.
 | config | Software config files, used to customize each clock. You'll have to write a config file for your particular clock. |
 | cron | cron scripts for uploading logs and downloading updates. |
 | face | Adobe Illustrator face designs for the clocks I've built. |
-| manuals | User manuals. |
 | pcbs | KiCad printed circuit board designs. |
 | website | Source files for the clock's web page. |
 | wordclock | The word clock software, as a Python package. |
@@ -33,6 +32,7 @@ See the `README` file in each directory for more information.
 | aws-s3-policy-example.json | An example AWS IAM policy file for granting the word clock S3 permissions. |
 | dnsmasq.conf | A tweaked version of `/etc/dnsmasq.conf`, for configuring the Pi's DHCP service. |
 | makefile | For installing the software. |
+| manual.docx | The user manual. |
 | setup.py | The Python package installation script. |
 
 

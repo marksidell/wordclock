@@ -1,10 +1,12 @@
 ## The Carbide 3D Designs
 
 This directory contains all of the word clock Carbide 3D milling
-designs (.c2d files) and GCode generated from the designs (.nc files).
-Except as noted, there is a .c2d and .nc file for each design.
-Except as noted, the origin
-for all designs is the lower-left corner of the piece.
+designs (`*.c2d`) and GCode generated from the designs (`*.nc` files).
+
+Except as noted:
+
+- There is a .c2d and .nc file for each design.
+- The origin for all designs is the lower-left corner of the piece.
 
 | File | Description |
 |------|-------------|

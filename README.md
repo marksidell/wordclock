@@ -8,6 +8,9 @@ video tour</a> of the word clock at YouTube.*
 <a href="https://github.com/marksidell/wordclock/wiki" target="_blank">
 wiki</a>.*
 
+<a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQStdv3OZqONGQ3K7h9tHB2eYP5Ft4sCtjWJ84ZjRLP-8blSC_7sYkqp4zAAOey4n2pG4VfOC5HdfLr/pubhtml" target="_blank">
+Bill of Materials</a>
+
 ## Repo Contents
 
 ### Directories
@@ -33,6 +36,7 @@ See the `README` file in each directory for more information.
 | dnsmasq.conf | A tweaked version of `/etc/dnsmasq.conf`, for configuring the Pi's DHCP service. |
 | makefile | For installing the software. |
 | manual.docx | The user manual. |
+| pi-pinouts.md | What passes for a schematic. |
 | setup.py | The Python package installation script. |
 
 

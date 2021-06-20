@@ -2,7 +2,7 @@
 Check S3 for an update. If found download and run it.
 
 Updates are tar/gzip files. They may contain any content,
-but must contain a file named "script", which we execute.
+but must contain a file named "update", which we execute.
 The S3 objects have names of the form:
 
   update/<username>/update-<yyyy><mm><dd><nn>.tgz

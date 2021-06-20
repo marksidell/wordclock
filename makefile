@@ -15,9 +15,11 @@ PYTHON_PACKAGES = RPI.GPIO adafruit-blinka rpi_ws281x adafruit-circuitpython-neo
 
 VARS_DIR = /var/wordclock
 UPDATES_DIR = $(VARS_DIR)/updates
+WEB_DIR = $(VARS_DIR)/website
+WEB_STATIC_DIR = $(WEB_DIR)/static
 
-VARS_FILES = favicon.ico body.html script.js jquery.min.js w3.css
-VARS_TARGET_FILES = $(addprefix $(VARS_DIR)/,$(VARS_FILES))
+WEB_STATIC_FILES = favicon.ico script.js jquery.min.js w3.css
+WEB_TARGET_FILES = $(WEB_DIR)/body.html $(addprefix $(WEB_STATIC_DIR)/,$(WEB_STATIC_FILES))
 
 PACKAGE = wordclock
 CONFIG_SRC_FILE = config/$(CONFIG).py
@@ -42,7 +44,7 @@ HOTSPOT = /usr/local/sbin/hotspot
 # Install the word clock software
 #
 .PHONY: all
-all: $(TIMESTAMP_FILE) $(SERVICE_FILE) $(VARS_TARGET_FILES) $(CRON_FILES) $(UPDATES_DIR)
+all: $(TIMESTAMP_FILE) $(SERVICE_FILE) $(WEB_TARGET_FILES) $(CRON_FILES) $(UPDATES_DIR)
 
 # Install all prerequisite packages and do other necessary configuration
 #
@@ -138,24 +140,24 @@ $(CONFIG_FILE): $(CONFIG_SRC_FILE)
 $(S3_CONFIG_FILE):
 	echo -e "S3_BUCKET = \"$(S3_BUCKET)\"" > $@
 
-$(VARS_DIR)/jquery.min.js:
-	mkdir -p $(VARS_DIR)
-	cd $(VARS_DIR); wget https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js
-
-$(VARS_DIR)/w3.css:
-	mkdir -p $(VARS_DIR)
-	cd $(VARS_DIR); wget https://www.w3schools.com/w3css/4/w3.css
-
-$(VARS_DIR)/favicon.ico: website/favicon.ico
-	mkdir -p $(VARS_DIR)
+$(WEB_DIR)/body.html: website/body.html
+	mkdir -p $(WEB_DIR)
 	cp -f $^ $@
 
-$(VARS_DIR)/body.html: website/body.html
-	mkdir -p $(VARS_DIR)
+$(WEB_STATIC_DIR)/jquery.min.js:
+	mkdir -p $(WEB_STATIC_DIR)
+	cd $(WEB_STATIC_DIR); wget https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js
+
+$(WEB_STATIC_DIR)/w3.css:
+	mkdir -p $(WEB_STATIC_DIR)
+	cd $(WEB_STATIC_DIR); wget https://www.w3schools.com/w3css/4/w3.css
+
+$(WEB_STATIC_DIR)/favicon.ico: website/favicon.ico
+	mkdir -p $(WEB_STATIC_DIR)
 	cp -f $^ $@
 
-$(VARS_DIR)/script.js: website/script.js
-	mkdir -p $(VARS_DIR)
+$(WEB_STATIC_DIR)/script.js: website/script.js
+	mkdir -p $(WEB_STATIC_DIR)
 	cp -f $^ $@
 
 $(SERVICE_FILE): $(SERVICE_SRC_FILE)

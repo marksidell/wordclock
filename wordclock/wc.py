@@ -22,7 +22,6 @@ import math
 from bisect import bisect_left
 import json
 import traceback
-from io import StringIO
 import asyncio
 import pytz
 import astral
@@ -125,11 +124,7 @@ PORT_HTTP = 80
 
 FILES_DIR = '/var/wordclock'
 PARAMS_FILE = os.path.join(FILES_DIR, 'params.json')
-JQUERY_FILE = os.path.join(FILES_DIR, 'jquery.min.js')
-FAVICON_FILE = os.path.join(FILES_DIR, 'favicon.ico')
-CSS_FILE = os.path.join(FILES_DIR, 'w3.css')
-BODY_FILE = os.path.join(FILES_DIR, 'body.html')
-SCRIPT_FILE = os.path.join(FILES_DIR, 'script.js')
+BODY_FILE = os.path.join(FILES_DIR, 'website', 'body.html')
 
 # These keys must agree with the corresponding controls on the web page.
 PARAM_SSID = 'ssid'
@@ -507,15 +502,17 @@ class Main():
 
         self.loop = asyncio.get_event_loop()
         self.start_hotspot_event = asyncio.Event()
-        self.http_site = None
+        self.http_runner = None
 
         self.button_down_time = None # Time when the button was last pressed (None if not pressed)
         self.button_up_time = None   # Time when the button was last released
         self.button_presses = 0
         self.button_duration = 0     # The duration of the last button press
 
+        #pylint: disable=no-member
         GPIO.setup(PIN_BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(PIN_BUTTON, GPIO.BOTH, callback=self.handle_button, bouncetime=100)
+        #pylint: enable=no-member
 
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.init_light_sensor()
@@ -528,15 +525,6 @@ class Main():
         self.sunrise = SUNRISE_LEFT
 
         self.read_params()
-
-        with open(CSS_FILE, 'r') as fil:
-            self.css = fil.read()
-
-        with open(JQUERY_FILE, 'r') as fil:
-            self.jquery = fil.read()
-
-        with open(FAVICON_FILE, 'rb') as fil:
-            self.favicon = fil.read()
 
         self.pixels = neopixel.NeoPixel(PIN_PIXELS, N_PIXELS, auto_write=False)
 
@@ -561,7 +549,7 @@ class Main():
         except KeyboardInterrupt:
             pass
 
-        self.loop.run_until_complete(self.http_site.stop())
+        self.loop.run_until_complete(self.http_runner.cleanup())
 
     def init_light_sensor(self):
         ''' Initialize the ambient light sensor
@@ -608,103 +596,123 @@ class Main():
     async def run_http_server(self):
         ''' Run our web server.
         '''
-        http_runner = (
-            web.ServerRunner( #pylint: disable=no-member
-                web.Server(self.handle_http_request)))
-        await http_runner.setup()
+        app = web.Application()
+        app.add_routes([
+            web.static('/static', '/var/wordclock/website/static'),
+            web.get('/', self.handle_get_body),
+            web.get('/vars.js', self.handle_get_vars),
+            web.post('/save', self.handle_post_save),
+            web.post('/mode', self.handle_post_mode),
+            web.get('/state', self.handle_get_state),
+            web.post('/futz', self.handle_post_futz),
+            web.get('/ping', self.handle_get_ping),
+            ])
 
-        self.http_site = (
-            web.TCPSite( #pylint: disable=no-member
-                http_runner,
-                host=None,
-                port=PORT_HTTP))
-        await self.http_site.start()
+        self.http_runner = web.AppRunner(app)
+        await self.http_runner.setup()
+        site = web.TCPSite(self.http_runner, host=None, port=PORT_HTTP)
+        await site.start()
 
-    async def handle_http_request(self, request):
-        ''' Handle http requests
+    async def handle_get_body(self, _request):
+        ''' handle web get main body
         '''
-        #pylint: disable=too-many-branches
+        if self.args.debug:
+            print('send body')
 
-        try:
-            if request.path == '/':
-                with open(BODY_FILE, 'r') as fil:
-                    body = fil.read()
+        with open(BODY_FILE, 'r') as fil:
+            body = fil.read()
 
-                result = web.Response(
-                    text=body.format(title=SETTINGS_TITLE),
-                    content_type='text/html')
+        return web.Response(
+            text=body.format(title=SETTINGS_TITLE),
+            content_type='text/html')
 
-            elif request.path == '/script.js':
-                result = self.fmt_script()
+    async def handle_get_vars(self, _request):
+        ''' handle web get javascript vars
+        '''
+        params_sans_password = self.params.copy()
+        params_sans_password[PARAM_PASSWORD] = ''
+        is_hotspot = self.state == State.HOTSPOT
 
-            elif request.path == '/w3.css':
-                result = web.Response(
-                    text=self.css,
-                    content_type='text/css')
+        js_vars = (
+            'var curSettings = {settings};\n'
+            'var newSettings = {settings};\n'
+            'var State = {state};\n'
+            'var isHotspot = {is_hotspot}\n'
+            'var serverIp = "{server_ip}"\n'
+            'var version = "{version}"\n'
+            '\n'.format(
+                settings=json.dumps(params_sans_password),
+                state=json.dumps(
+                    dict(
+                        ambient=self.cur_ambient,
+                    )
+                ),
+                is_hotspot='true' if is_hotspot else 'false',
+                server_ip=HOTSPOT_IP if is_hotspot else self.server_ip,
+                version=__version__,
+            ))
 
-            elif request.path == '/jquery.min.js':
-                result = web.Response(
-                    text=self.jquery,
-                    content_type='text/javascript')
+        if self.args.debug:
+            print('send vars:\n{}'.format(js_vars))
 
-            elif request.path == '/favicon.ico':
-                result = web.Response(
-                    body=self.favicon,
-                    content_type='image/ico')
+        return web.Response(content_type='text/javascript', text=js_vars)
 
-            elif request.path == '/save':
-                data = await get_request_data(request)
+    async def handle_post_save(self, request):
+        ''' handle web ajax post save changes
+        '''
+        data = await get_request_data(request)
 
-                if data:
-                    result = self.do_config_save(data)
+        if data:
+            if self.args.debug:
+                print('save:', data)
 
-            elif request.path == '/mode':
-                result = make_json_response()
-                data = await get_request_data(request)
+            return self.do_config_save(data)
 
-                if data:
-                    new_mode = DisplayMode[data.get('display_mode')]
+        raise web.HTTPBadRequest()
 
-                    if self.display_mode != new_mode:
-                        self.is_on = True
-                        self.set_display_mode(new_mode)
-                        self.update_clock()
+    async def handle_post_mode(self, request):
+        ''' handle web ajax post change clock mode
+        '''
+        data = await get_request_data(request)
 
-            elif request.path == '/state':
-                result = make_json_response(
-                    data=dict(
-                        cur_ambient=int(self.cur_ambient),
-                        cur_brightness=round(self.brightness_factor * 100),
-                        cur_angle=round(self.orientation.angle),
-                        cur_orientation=self.orientation.orientation,
-                        display_mode=self.display_mode.name,
-                        sunrise_orientation=self.get_compass_sunrise(),
-                    ))
+        if data:
+            if self.args.debug:
+                print('mode:', data)
 
-            elif request.path == '/futz':
-                result = make_json_response()
-                await self.futz(request)
+            new_mode = DisplayMode[data.get('display_mode')]
 
-            elif request.path == '/ping':
-                # Tell the browser to stop, except on the very first ping
-                result = make_json_response(data=dict(ok=self.futzing or self.last_ping is None))
-                self.last_ping = time.time()
+            if self.display_mode != new_mode:
+                self.is_on = True
+                self.set_display_mode(new_mode)
+                self.update_clock()
 
-            else:
-                result = web.Response(status=404)
+        return  make_json_response()
 
-            return result
+    async def handle_get_state(self, _request):
+        ''' handle web ajax get current clock state
+        '''
+        state = dict(
+            cur_ambient=int(self.cur_ambient),
+            cur_brightness=round(self.brightness_factor * 100),
+            cur_angle=round(self.orientation.angle),
+            cur_orientation=self.orientation.orientation,
+            display_mode=self.display_mode.name,
+            sunrise_orientation=self.get_compass_sunrise())
 
-        except Exception as err: #pylint: disable=broad-except
-            traceback.print_exc()
-            return web.Response(text='Exception: {}'.format(err), status=500)
+        if self.args.debug:
+            print('state:', state)
 
-    async def futz(self, request):
-        ''' Handle a futz request
+        return make_json_response(state)
+
+    async def handle_post_futz(self, request):
+        ''' handle web ajax post turn futz mode on/off
         '''
         data = await get_request_data(request)
 
         if bool(data):
+            if self.args.debug:
+                print('futz:', data)
+
             self.futzing = True
             self.last_ping = time.time()
             self.brightness_factor = max(0, min(100, data.get('brightness', 100))) / 100
@@ -717,6 +725,19 @@ class Main():
         else:
             self.stop_futzing()
 
+        return make_json_response()
+
+    async def handle_get_ping(self, _request):
+        ''' handle web ajax get ping request (to keep futz mode alive)
+        '''
+        self.last_ping = time.time()
+
+        if self.args.debug:
+            print('ping', self.futzing, self.last_ping)
+
+        # Tell the browser to stop, except on the very first ping
+        return make_json_response(data=dict(ok=self.futzing or self.last_ping is None))
+
     def stop_futzing(self):
         ''' stop futzing with brightness
         '''
@@ -724,40 +745,6 @@ class Main():
         self.last_ping = None
         self.set_brightness_factor()
         self.update_clock()
-
-    def fmt_script(self):
-        ''' Return the configuration web page script
-        '''
-        buf = StringIO()
-        params_sans_password = self.params.copy()
-        params_sans_password[PARAM_PASSWORD] = ''
-
-        is_hotspot = self.state == State.HOTSPOT
-
-        buf.write(
-            'var curSettings = {settings};\n'
-            'var newSettings = {settings};\n'
-            'var State = {state};\n'
-            'var isHotspot = {is_hotspot}\n'
-            'var serverIp = "{server_ip}"\n'
-            'var version = "{version}"\n'
-            '\n'.format(
-                settings=json.dumps(params_sans_password),
-                state=json.dumps(
-                    dict(
-                        ambient=self.cur_ambient,
-                        )
-                    ),
-                is_hotspot='true' if is_hotspot else 'false',
-                server_ip=HOTSPOT_IP if is_hotspot else self.server_ip,
-                version=__version__,
-                ))
-
-        with open(SCRIPT_FILE, 'r') as fil:
-            script = fil.read()
-
-        buf.write(script)
-        return web.Response(text=buf.getvalue(), content_type='text/javascript')
 
     def do_config_save(self, data):
         ''' Save config
@@ -1011,8 +998,6 @@ class Main():
     async def display_demo(self):
         ''' Update the clock in demo mode
         '''
-        #pylint: disable=too-many-branches
-
         state = "sunrise"
         # A Sunday
         start_day = datetime.date(2021, 3, 7)
@@ -1033,47 +1018,64 @@ class Main():
 
         cur = baseline
         demo_now = cur[SR_BEGIN]
+        sleep = 0.1
+
+        def _do_sunrise():
+            nonlocal demo_now, sleep, state, cur
+
+            if demo_now == cur[SR_BEGIN]:
+                sleep = 2
+            elif demo_now >= cur[SR_END]:
+                sleep = 1
+
+            if demo_now > cur[SR_END]:
+                state = 'day'
+                demo_now = demo_now.replace(hour=demo_now.hour+1, minute=0)
+
+        def _do_day():
+            nonlocal demo_now, sleep, state, cur
+
+            sleep = 1
+            demo_now = demo_now.replace(hour=demo_now.hour + 1, minute=0)
+
+            if demo_now.hour == cur[SS_BEGIN].hour:
+                state = 'before_sunset'
+
+        def _do_before_sunset():
+            nonlocal demo_now, sleep, state, cur
+
+            demo_now = cur[SS_BEGIN]
+            state = 'sunset'
+            sleep = 1
+
+        def _do_sunset():
+            nonlocal demo_now, sleep, state, cur
+
+            if demo_now == cur[SS_END]:
+                sleep = 5
+
+            elif demo_now > cur[SS_END]:
+                state = 'sunrise'
+                sleep = 1
+
+                if demo_now.day >= cur[SR_BEGIN].day + 6:
+                    cur = baseline
+                else:
+                    for key, value in cur.items():
+                        cur[key] = value.replace(day=value.day+1)
+
+                demo_now = cur[SR_BEGIN]
+
+        do_switch = dict(
+            sunrise=_do_sunrise,
+            day=_do_day,
+            before_sunset=_do_before_sunset,
+            sunset=_do_sunset,
+            )
 
         while self.display_mode == DisplayMode.DEMO:
             sleep = 0.1
-
-            if state == 'sunrise':
-                if demo_now == cur[SR_BEGIN]:
-                    sleep = 2
-                elif demo_now >= cur[SR_END]:
-                    sleep = 1
-
-                if demo_now > cur[SR_END]:
-                    state = 'day'
-                    demo_now = demo_now.replace(hour=demo_now.hour+1, minute=0)
-
-            elif state == 'day':
-                sleep = 1
-                demo_now = demo_now.replace(hour=demo_now.hour + 1, minute=0)
-
-                if demo_now.hour == cur[SS_BEGIN].hour:
-                    state = 'before_sunset'
-
-            elif state == 'before_sunset':
-                demo_now = cur[SS_BEGIN]
-                state = 'sunset'
-                sleep = 1
-
-            elif state == 'sunset':
-                if demo_now == cur[SS_END]:
-                    sleep = 5
-
-                elif demo_now > cur[SS_END]:
-                    state = 'sunrise'
-                    sleep = 1
-
-                    if demo_now.day >= cur[SR_BEGIN].day + 6:
-                        cur = baseline
-                    else:
-                        for key, value in cur.items():
-                            cur[key] = value.replace(day=value.day+1)
-
-                    demo_now = cur[SR_BEGIN]
+            do_switch[state]()
 
             if not self.args.daemon:
                 print(state, demo_now, sleep)
@@ -1372,7 +1374,7 @@ class Main():
         now = time.time()
         await asyncio.sleep(0.050)
 
-        if GPIO.input(PIN_BUTTON):
+        if GPIO.input(PIN_BUTTON): #pylint: disable=no-member
             self.button_up_time = now
             self.button_duration = now - self.button_down_time if self.button_down_time else 0
             self.button_down_time = None

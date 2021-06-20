@@ -5,3 +5,4 @@ wordclock/config.py
 wordclock/timestamp.txt
 wordclock/s3config.py
 fp-info-cache
+~syncthing*

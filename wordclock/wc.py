@@ -606,9 +606,7 @@ class Main():
             traceback.print_exc()
 
     async def run_http_server(self):
-        ''' Run a simple web server to handle requests from our healthcheck
-            lambda to refresh our letsencrypt cert. We also use this server
-            in self-test mode, in which we send client ldap requests to this server.
+        ''' Run our web server.
         '''
         http_runner = (
             web.ServerRunner( #pylint: disable=no-member
@@ -1240,11 +1238,10 @@ class Main():
             else:
                 self.set_word(config.TO)
                 hour += 1
+        else:
+            self.set_word(config.OCLOCK)
 
         self.set_word(HOURS[hour % len(HOURS)])
-
-        if not minute_word:
-            self.set_word(config.OCLOCK)
 
     def write_minute(self, now_minute):
         ''' Write the minute digit

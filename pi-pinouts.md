@@ -6,10 +6,10 @@ Sorry, this file is what passes for a schematic.
 
 | Pin | Description |
 |-----|-------------|
-| 1 | 3.3V power |
+| 1 | 3.3V power (red) |
 | 3 | SDA (blue) |
 | 5 | SCL (yellow) |
-| 9 | GND |
+| 9 | GND (black) |
 
 ### Logic level converter connections (for driving the neopixels)
 

@@ -38,6 +38,7 @@ See the `README` file in each directory for more information.
 | <a href="https://github.com/marksidell/wordclock/blob/main/manual.docx" target="_blank">manual.docx</a> | The user manual. |
 | <a href="https://github.com/marksidell/wordclock/blob/main/pi-pinouts.md" target="_blank">pi-pinouts.md</a> | What passes for a schematic. |
 | <a href="https://github.com/marksidell/wordclock/blob/main/setup.py" target="_blank">setup.py</a> | The Python package installation script. |
+| <a href="https://github.com/marksidell/wordclock/blob/main/wc.service" target="_blank">setup.py</a> | The systemd service config file. |
 
 ## How It Works
 

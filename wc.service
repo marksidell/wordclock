@@ -1,0 +1,13 @@
+[Unit]
+Description=WordClock Service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/local/bin/wc --daemon
+WorkingDirectory=/var/wordclock
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -437,14 +437,6 @@ class AstralInfo():
             golden[0].timestamp(), golden[1].timestamp())
 
 
-def make_json_response(data=None):
-    ''' Make a web json response
-    '''
-    return web.Response(
-        text=json.dumps(dict() if data is None else data),
-        content_type='text/json')
-
-
 async def get_request_data(request):
     ''' Obtain http request json data
     '''
@@ -686,7 +678,7 @@ class Main():
                 self.set_display_mode(new_mode)
                 self.update_clock()
 
-        return  make_json_response()
+        return  web.json_response(dict())
 
     async def handle_get_state(self, _request):
         ''' handle web ajax get current clock state
@@ -702,7 +694,7 @@ class Main():
         if self.args.debug:
             print('state:', state)
 
-        return make_json_response(state)
+        return web.json_response(state)
 
     async def handle_post_futz(self, request):
         ''' handle web ajax post turn futz mode on/off
@@ -725,7 +717,7 @@ class Main():
         else:
             self.stop_futzing()
 
-        return make_json_response()
+        return web.json_response(dict())
 
     async def handle_get_ping(self, _request):
         ''' handle web ajax get ping request (to keep futz mode alive)
@@ -736,7 +728,7 @@ class Main():
             print('ping', self.futzing, self.last_ping)
 
         # Tell the browser to stop, except on the very first ping
-        return make_json_response(data=dict(ok=self.futzing or self.last_ping is None))
+        return web.json_response(dict(ok=self.futzing or self.last_ping is None))
 
     def stop_futzing(self):
         ''' stop futzing with brightness
@@ -963,8 +955,7 @@ class Main():
         ''' Update the compass
         '''
         while True:
-            self.orientation = await self.loop.run_in_executor(
-                None, self.compass.update, self.args.debug)
+            self.orientation = await self.loop.run_in_executor(None, self.do_update_compass)
 
             # This is to prevent is from jittering between left and right sunrises.
             if abs(self.cur_angle - self.orientation.angle) > COMPASS_JITTER_THRESHOLD:
@@ -972,6 +963,14 @@ class Main():
 
             self.set_sunrise_orientation()
             await asyncio.sleep(2)
+
+    def do_update_compass(self):
+        ''' Update the compass
+        '''
+        return self.compass.update(
+            verbose=self.args.debug,
+            lat=self.params.get(PARAM_LAT),
+            lon=self.params.get(PARAM_LON))
 
     def set_sunrise_orientation(self):
         ''' Set the sunrise orientation

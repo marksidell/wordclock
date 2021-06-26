@@ -8,6 +8,7 @@ import json
 import math
 import adafruit_mlx90393
 import qwiic_adxl313
+import geomag
 
 COMPASS_SMOOTHING_DEQUE_LEN = 2
 
@@ -99,7 +100,7 @@ class Magnetometer():
             except Exception as err: #pylint: disable=broad-except
                 print('Failed to init the accelerometer:', str(err), flush=True)
 
-    def update(self, do_calibration=False, verbose=False):
+    def update(self, do_calibration=False, verbose=False, lat=None, lon=None):
         ''' Update the compass position
         '''
         angle = None
@@ -148,13 +149,15 @@ class Magnetometer():
                     adjusted[self._orientation.opposite],
                     adjusted[self._orientation.near]) * RADIAN_TO_DEGREE
 
-                if new_angle < 0:
-                    new_angle += 360
+                declination = (
+                    geomag.declination(dlat=lat, dlon=lon)
+                    if lat is not None and lon is not None
+                    else 0)
 
-                new_angle = (new_angle + self._orientation.offset) % 360
+                new_angle = (new_angle + self._orientation.offset + declination + 360) % 360
 
                 if verbose:
-                    print(int(new_angle), adjusted, mag_coords, flush=True)
+                    print(int(new_angle), adjusted, declination, mag_coords, flush=True)
 
                 self._angle_history.append(new_angle)
 

@@ -20,25 +20,17 @@ See the `README` file in each directory for more information.
 | Directory | Description |
 |------|-------------|
 | <a href="https://github.com/marksidell/wordclock/tree/main/carbide3d" target="_blank">carbide3d</a> | Carbide Create designs for various clock components. |
-| <a href="https://github.com/marksidell/wordclock/tree/main/config" target="_blank">config</a> | Software config files, used to customize each clock. You'll have to write a config file for your particular clock. |
-| <a href="https://github.com/marksidell/wordclock/tree/main/cron" target="_blank">cron</a> | cron scripts for uploading logs and downloading updates. |
+| <a href="https://github.com/marksidell/wordclock/tree/main/code" target="_blank">code</a> | The code that needs to be copied to the Pi. |
 | <a href="https://github.com/marksidell/wordclock/tree/main/face" target="_blank">face</a> | Adobe Illustrator face designs for the clocks I've built. |
 | <a href="https://github.com/marksidell/wordclock/tree/main/pcbs" target="_blank">pcbs</a> | KiCad printed circuit board designs. |
-| <a href="https://github.com/marksidell/wordclock/tree/main/website" target="_blank">website</a> | Source files for the clock's web page. |
-| <a href="https://github.com/marksidell/wordclock/tree/main/wordclock" target="_blank">wordclock</a> | The word clock software, as a Python package. |
 
 ### Files
 
 | File | Description |
 |------|-------------|
-| <a href="https://github.com/marksidell/wordclock/blob/main/authorized_keys" target="_blank">authorized_keys</a> | SSH public keys for logging into the Raspberry Pi. You'll have to change these, of course. |
 | <a href="https://github.com/marksidell/wordclock/blob/main/aws-s3-policy-example.json" target="_blank">aws-s3-policy-example.json</a> | An example AWS IAM policy file for granting the word clock S3 permissions. |
-| <a href="https://github.com/marksidell/wordclock/blob/main/dnsmasq.conf" target="_blank">dnsmasq.conf</a> | A tweaked version of `/etc/dnsmasq.conf`, for configuring the Pi's DHCP service. |
-| <a href="https://github.com/marksidell/wordclock/blob/main/makefile" target="_blank">makefile</a> | For installing the software. |
 | <a href="https://github.com/marksidell/wordclock/blob/main/manual.docx" target="_blank">manual.docx</a> | The user manual. |
 | <a href="https://github.com/marksidell/wordclock/blob/main/pi-pinouts.md" target="_blank">pi-pinouts.md</a> | What passes for a schematic. |
-| <a href="https://github.com/marksidell/wordclock/blob/main/setup.py" target="_blank">setup.py</a> | The Python package installation script. |
-| <a href="https://github.com/marksidell/wordclock/blob/main/wc.service" target="_blank">setup.py</a> | The systemd service config file. |
 
 ## How It Works
 

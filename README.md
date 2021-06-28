@@ -78,18 +78,58 @@ The Python package includes several test programs:
 | tsense | Test and report values for the sensors: magnetometer, accelerometer, and light sensor. |
 | calibrate | Calibrate the magnetometer. |
 
+## Setting up the Pi
+
+Notes to myself:
+
+- Add my own ssh public key to `/home/pi/.ssh/authorized_keys`.
+
+- Allow ssh agent forwarding when root by creating a sudoers file.
+  This will allow me to use ssh to access github.
+
+  ```
+  visudo -f /etc/sudoers.d/ssh_agent_forwarding
+  ```
+
+  In VI add this line and save the file:
+
+  ```
+  Defaults env_keep += "SSH_AUTH_SOCK"
+  ```
+
+- Add this line to `/root/.ssh.config` so that I can ssh to other servers when root:
+
+  ```
+  User <my-username>
+  ```
+
+
 ## Installation
 
 1. Using `raspi-config`, enable `i2c`.
 
 2. Get the contents of this repo onto the Pi.
 
+   ```
+   cd /home/pi
+   git clone git@github.com:marksidell/wordclock.git
+   ```
+
 3. Create a custom `config-<xx>.py` file for your particular clock. The config files are stored
 in the `config` directory.
 
-4. Install everything:
+4. Do one-time setup. This assumes you've modified the authorized_keys file to
+permit login with your own key pair.
 
    ```bash
-   cd <repo>
+   cd <repo>/code
+   sudo make config_sshd
+   sudo make setup
+   ```
+
+5. Install everything:
+
+   ```bash
+   cd <repo>/code
    sudo make all [CONFIG=<config-file-base-name>] [S3_BUCKET=<s3-bucket-name>]
    ```

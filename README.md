@@ -103,6 +103,14 @@ Notes to myself:
   User <my-username>
   ```
 
+- Add wordclock-<xx> AWS credentials to `/root/.aws/credentials`:
+
+  ```
+  [default]
+  aws_access_key_id = <key>
+  aws_secret_access_key = <secret>
+  ```
+
 
 ## Installation
 

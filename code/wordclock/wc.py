@@ -958,7 +958,8 @@ class Main():
             self.orientation = await self.loop.run_in_executor(None, self.do_update_compass)
 
             # This is to prevent is from jittering between left and right sunrises.
-            if abs(self.cur_angle - self.orientation.angle) > COMPASS_JITTER_THRESHOLD:
+            if (self.orientation.angle is not None and
+                    abs(self.cur_angle - self.orientation.angle) > COMPASS_JITTER_THRESHOLD):
                 self.cur_angle = self.orientation.angle
 
             self.set_sunrise_orientation()

@@ -1,8 +1,8 @@
 *~
-wordclock.egg-info
-wordclock/__pycache__
-wordclock/config.py
-wordclock/timestamp.txt
-wordclock/s3config.py
+code/wordclock.egg-info
+code/wordclock/__pycache__
+code/wordclock/config.py
+code/wordclock/timestamp.txt
+code/wordclock/s3config.py
 fp-info-cache
 ~syncthing*

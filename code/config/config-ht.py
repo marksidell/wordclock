@@ -2,8 +2,7 @@
 Configuration for the Hans & Tomomi clock
 '''
 
-import datetime
-from wordclock.configdefs import Word, BirthDate, SpecialBirthday
+from wordclock.configdefs import Word, BirthDate
 
 VERSION_2 = False
 

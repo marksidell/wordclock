@@ -56,7 +56,7 @@ H_TEN = Word('ten', 7, 4, False)
 ELIAH = Word('eliah', 7, 7, False)
 ALE = Word('ale', 7, 10, True)
 
-AUGGIE = World('auggie', 8, 1, False)
+AUGGIE = Word('auggie', 8, 1, False)
 ELLE = Word('elle', 8, 8, False)
 EVE = Word('eve', 8, 6, False)
 
@@ -71,6 +71,20 @@ OK = Word('ok', 10, 4, False)
 OCLOCK = Word('oclock', 10, 6, False)
 CLOCK = Word('clock', 10, 7, False)
 LOCK = Word('lock', 10, 8, False)
+
+EVE2 = Word('eve', 7, 0, True)
+VEN = Word('ven', 8, 0, True)
+TOM = Word('tom', 9, 1, True)
+SEA = Word('sea', 1, 2, True)
+NOG = Word('nog', 5, 2, True)
+SAT = Word('sat', 0, 4, True)
+YET2 = Word('vet', 2, 5, True)
+EEL = Word('eel', 8, 8, True)
+TEA = Word('tea', 1, 9, True)
+EAST = Word('east', 1, 10, True)
+TOE = Word('toe', 3, 11, True)
+HEN = Word('hen', 7, 11, True)
+
 
 BIRTHDAYS = {
     BirthDate(8, 25): ELLE,
@@ -129,4 +143,16 @@ ALL_WORDS = [
     OCLOCK,
     CLOCK,
     LOCK,
+    EVE2,
+    VEN,
+    TOM,
+    SEA,
+    NOG,
+    SAT,
+    YET2,
+    EEL,
+    TEA,
+    EAST,
+    TOE,
+    HEN,
 ]

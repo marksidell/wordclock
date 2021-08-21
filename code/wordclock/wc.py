@@ -93,6 +93,45 @@ RANDOM_COLORS = [
     (255, 255, 255),
     ]
 
+
+def is_after(word0, word1):
+    ''' Is word1 after word0 on the grid?
+    '''
+    l_word0 = len(word0.text)
+
+    if word0.vertical:
+        word0_end = word0.y + l_word0
+
+        return (
+            word1.y >= word0.y and word1.y <= word0_end and word1.x > word0.x + 1
+            or word1.y > word0_end)
+
+    return word1.y == word0.y and word1.x > word0.x + l_word0 or word1.y > word0.y
+
+
+def init_poems(all_words_in_grid_order):
+    ''' Calculate poems.
+        Store a list of poems that start with each word.
+        Return a list of all poems.
+    '''
+    for word0 in all_words_in_grid_order:
+        word0.after = [word1 for word1 in all_words_in_grid_order if is_after(word0, word1)]
+
+    for word0 in all_words_in_grid_order:
+        word0.poems = [
+            (word0, word1, word2)
+            for word1 in word0.after
+            for word2 in word1.after
+            if word0.after and word1.after]
+
+    return [poem for word in all_words_in_grid_order for poem in word.poems]
+
+# All words ordered by their position in the grid, left to right, top to bottom.
+ALL_WORDS_IN_GRID_ORDER = sorted(config.ALL_WORDS, key=lambda x: (x.y, x.x))
+
+# All four-word poems
+ALL_POEMS = init_poems(ALL_WORDS_IN_GRID_ORDER)
+
 class State(Enum):
     ''' The operational state
     '''
@@ -124,6 +163,7 @@ PORT_HTTP = 80
 
 FILES_DIR = '/var/wordclock'
 PARAMS_FILE = os.path.join(FILES_DIR, 'params.json')
+WIFI_PARAMS_FILE = os.path.join(FILES_DIR, 'wifi.json')
 BODY_FILE = os.path.join(FILES_DIR, 'website', 'body.html')
 
 # These keys must agree with the corresponding controls on the web page.
@@ -136,6 +176,8 @@ PARAM_MIN_BRIGHTNESS = 'min_brightness'
 PARAM_MAX_LIGHT = 'max_light'
 PARAM_MAX_BRIGHTNESS = 'max_brightness'
 PARAM_SUNRISE = 'sunrise'
+
+WIFI_PARAMS = [PARAM_SSID, PARAM_PASSWORD]
 
 SUNRISE_LEFT = "left"
 SUNRISE_RIGHT = "right"
@@ -572,9 +614,8 @@ class Main():
         }
 
         try:
-            if os.path.isfile(PARAMS_FILE):
-                with open(PARAMS_FILE, 'r') as fil:
-                    self.params.update(json.loads(fil.read()))
+            self.read_params_file(PARAMS_FILE)
+            self.read_params_file(WIFI_PARAMS_FILE)
 
             self.set_timezone()
 
@@ -584,6 +625,23 @@ class Main():
         except Exception as err: #pylint: disable=broad-except
             print('Error reading params:', str(err), flush=True)
             traceback.print_exc()
+
+    def read_params_file(self, path):
+        ''' Read a params file
+        '''
+        if os.path.isfile(path):
+            with open(path, 'r') as fil:
+                self.params.update(json.loads(fil.read()))
+
+    def write_params_file(self, path, filter_func):
+        ''' Write a params file
+        '''
+        with open(path, 'w') as fil:
+            fil.write(
+                json.dumps(
+                    {key: value for key, value in self.params.items()
+                     if filter_func(key)},
+                    indent=2, sort_keys=True))
 
     async def run_http_server(self):
         ''' Run our web server.
@@ -756,8 +814,8 @@ class Main():
 
             self.params.update(data)
 
-            with open(PARAMS_FILE, 'w') as fil:
-                fil.write(json.dumps(self.params, indent=2, sort_keys=True))
+            self.write_params_file(PARAMS_FILE, lambda x: x not in WIFI_PARAMS)
+            self.write_params_file(WIFI_PARAMS_FILE, lambda x: x in WIFI_PARAMS)
 
             running_hotspot = self.state == State.HOTSPOT
             activating_wifi = changed_wifi or running_hotspot

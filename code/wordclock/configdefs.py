@@ -4,16 +4,24 @@ Namedtuples used in the config files
 
 from collections import namedtuple
 
-# Defines a word on the clock face
-#
-Word = namedtuple(
-    'Word',
-    [
-        'text',     # The word text, used to calculate its length
-        'y',        # The starting row
-        'x',        # The startin column
-        'vertical'  # True if the word is vertical
-    ])
+class Word:
+    ''' Defines a word on the clock face
+    '''
+    def __init__(self, text, y, x, vertical=False):
+        '''
+        text: The word text, used to calculate its length
+        y:        # The starting row
+        x:        # The startin column
+        vertical: # True if the word is vertical
+        after:    # A list of the words that appear after this word in the gripd
+        poems:    # A list of poems starting with this word
+        '''
+        self.text = text
+        self.y = y
+        self.x = x
+        self.vertical = vertical
+        self.after = None
+        self.poems = None
 
 # Defines a birthday
 #

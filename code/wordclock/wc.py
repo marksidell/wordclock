@@ -37,6 +37,7 @@ import adafruit_veml7700
 from wordclock import __version__, config, magnetometer
 
 DO_CALIBRATION = False
+DO_RANDOM_WORD_POEMS = False
 
 HOTSPOT_IP = '10.0.0.1'
 
@@ -1186,7 +1187,7 @@ class Main():
                         self.set_word(poem_word, color=color)
 
                 self.pixels.show()
-                do_word = not (do_word and word.poems)
+                do_word = not (DO_RANDOM_WORD_POEMS or do_word and word.poems)
 
             await asyncio.sleep(1)
 

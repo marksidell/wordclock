@@ -109,11 +109,14 @@ def is_after(word0, word1):
     return word1.y == word0.y and word1.x > word0.x + l_word0 or word1.y > word0.y
 
 
-def init_poems(all_words_in_grid_order):
+def init_poems():
     ''' Calculate poems.
         Store a list of poems that start with each word.
-        Return a list of all poems.
+        Return a list of all poems, shuffled.
     '''
+    # All words ordered by their position in the grid, left to right, top to bottom.
+    all_words_in_grid_order = sorted(config.ALL_WORDS, key=lambda x: (x.y, x.x))
+
     for word0 in all_words_in_grid_order:
         word0.after = [word1 for word1 in all_words_in_grid_order if is_after(word0, word1)]
 
@@ -124,13 +127,12 @@ def init_poems(all_words_in_grid_order):
             for word2 in word1.after
             if word0.after and word1.after]
 
-    return [poem for word in all_words_in_grid_order for poem in word.poems]
+    poems = [poem for word in all_words_in_grid_order for poem in word.poems]
+    random.shuffle(poems)
+    return poems
 
-# All words ordered by their position in the grid, left to right, top to bottom.
-ALL_WORDS_IN_GRID_ORDER = sorted(config.ALL_WORDS, key=lambda x: (x.y, x.x))
-
-# All four-word poems
-ALL_POEMS = init_poems(ALL_WORDS_IN_GRID_ORDER)
+# All four-word poems, in random order
+ALL_POEMS = init_poems()
 
 class State(Enum):
     ''' The operational state
@@ -176,13 +178,19 @@ PARAM_MIN_BRIGHTNESS = 'min_brightness'
 PARAM_MAX_LIGHT = 'max_light'
 PARAM_MAX_BRIGHTNESS = 'max_brightness'
 PARAM_SUNRISE = 'sunrise'
+PARAM_POEMS = 'poems'
 
 WIFI_PARAMS = [PARAM_SSID, PARAM_PASSWORD]
 
-SUNRISE_LEFT = "left"
-SUNRISE_RIGHT = "right"
-SUNRISE_COMPASS = "compass"
+SUNRISE_LEFT = 'left'
+SUNRISE_RIGHT = 'right'
+SUNRISE_COMPASS = 'compass'
 DEFAULT_SUNRISE = SUNRISE_COMPASS
+
+POEMS_OFF = 'off'
+POEMS_HOURLY = 'hourly'
+POEMS_RANDOMLY = 'randomly'
+DEFAULT_POEMS = 'randomly'
 
 MAX_LAT = 90
 MAX_LON = 180
@@ -558,6 +566,10 @@ class Main():
         self.cur_angle = self.orientation.angle
         self.sunrise = SUNRISE_LEFT
 
+        self.random_minute = 0
+        self.poem_index = 0
+        self.do_poems = False
+
         self.read_params()
 
         self.pixels = neopixel.NeoPixel(PIN_PIXELS, N_PIXELS, auto_write=False)
@@ -611,6 +623,7 @@ class Main():
             PARAM_MAX_LIGHT: DEFAULT_MAX_LIGHT,
             PARAM_MAX_BRIGHTNESS: DEFAULT_MAX_BRIGHTNESS,
             PARAM_SUNRISE: DEFAULT_SUNRISE,
+            PARAM_POEMS: DEFAULT_POEMS,
         }
 
         try:
@@ -878,6 +891,7 @@ class Main():
 
                 self.button_presses = 0
                 self.do_birthday = False
+                self.do_poems = False
                 self.update_clock()
 
             await asyncio.sleep(0.1)
@@ -1147,25 +1161,32 @@ class Main():
     async def display_random(self):
         ''' Update random workds
         '''
-        random_words = config.ALL_WORDS.copy()
-        random.shuffle(random_words)
+        random_indeces = list(range(len(config.ALL_WORDS)))
+        random.shuffle(random_indeces)
+        do_word = True
         random_index = 0
 
         while self.display_mode == DisplayMode.RANDOM_WORDS:
             if self.should_run(DisplayMode.RANDOM_WORDS):
-                word = random_words[random_index]
-                random_index = (random_index + 1) % len(random_words)
-
-                if self.args.debug:
-                    print(word.text)
-
                 self.pixels.fill(COLOR_OFF)
-                self.set_word(word, color=random.choice(RANDOM_COLORS))
+                color = random.choice(RANDOM_COLORS)
 
-                for i in range(BORDER_PIXELS_BASE, BORDER_PIXELS_END):
-                    self.set_pixel(i, COLOR_RANDOM_BORDER)
+                self.set_word_border()
+
+                if do_word:
+                    word = config.ALL_WORDS[random_indeces[random_index]]
+                    random_index = (random_index + 1) % len(random_indeces)
+
+                    if self.args.debug:
+                        print(word.text)
+
+                    self.set_word(word, color=color)
+                else:
+                    for poem_word in random.choice(word.poems):
+                        self.set_word(poem_word, color=color)
 
                 self.pixels.show()
+                do_word = not (do_word and word.poems)
 
             await asyncio.sleep(1)
 
@@ -1261,16 +1282,32 @@ class Main():
         ''' display the clock
         '''
         self.set_day(now_minute)
+        do_clock = True
 
-        if (self.display_mode == DisplayMode.CLOCK
-                and self.birthday_name
-                and now_minute.minute == 0):
+        if now_minute.minute == 0:
+            self.random_minute = random.randint(0, 59)
 
-            if not self.do_birthday:
-                self.do_birthday = True
-                self.loop.create_task(self.display_birthday())
-        else:
+        if self.display_mode == DisplayMode.CLOCK:
+            if self.birthday_name and now_minute.minute == 0:
+                do_clock = False
+
+                if not self.do_birthday:
+                    self.do_birthday = True
+                    self.loop.create_task(self.display_birthday())
+
+            else:
+                poem_mode = self.params[PARAM_POEMS]
+
+                if (poem_mode == POEMS_HOURLY and now_minute.minute == 0 or
+                        poem_mode == POEMS_HOURLY and now_minute.minute ==  self.random_minute):
+
+                    do_clock = False
+                    self.do_poems = True
+                    self.loop.create_task(self.display_poems())
+
+        if do_clock:
             self.do_birthday = False
+            self.do_poems = False
 
             self.pixels.fill(COLOR_OFF)
             self.write_time(now_minute)
@@ -1369,6 +1406,30 @@ class Main():
 
             await asyncio.sleep(0.1)
 
+    async def display_poems(self):
+        ''' Display poems, a new one every 10 seconds.
+        '''
+        next_tic = time.time()
+
+        while self.do_poems:
+            if not self.button_presses:
+                now = time.time()
+
+                if now >= next_tic:
+                    next_tic = now + 10
+
+                    self.pixels.fill(COLOR_OFF)
+                    self.set_word_border()
+                    color = random.choice(RANDOM_COLORS)
+
+                    for word in ALL_POEMS[self.poem_index]:
+                        self.set_word(word, color=color)
+
+                    self.pixels.show()
+                    self.poem_index = (self.poem_index + 1) % len(ALL_POEMS)
+
+            await asyncio.sleep(0.5)
+
     def set_day(self, now_minute):
         ''' bump the day
         '''
@@ -1400,6 +1461,12 @@ class Main():
             for x_i in range(word.x, word.x + len(word.text)):
                 self.set_pixel(PIXEL_MAP[x_i][word.y], color)
 
+    def set_word_border(self):
+        ''' Set the border pixels for displaying words and poems
+        '''
+        for i in range(BORDER_PIXELS_BASE, BORDER_PIXELS_END):
+            self.set_pixel(i, COLOR_RANDOM_BORDER)
+        
     def set_numeric_pixel(self, index, color):
         ''' Set a numeric pixel
         '''

@@ -102,6 +102,11 @@ function changeSunrise() {
    enableSave();
 }
 
+function changePoems() {
+	newSettings["poems"] = $("#poems").val();
+	enableSave();
+}
+
 function changeDisplayMode() {
 	doAjax("POST", "mode", {display_mode: $("#display_mode").val()}, null);
 }

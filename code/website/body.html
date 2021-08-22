@@ -96,6 +96,14 @@ e<!DOCTYPE html>
 			<option value="right">Right Side</option>
 		</select>
 	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="poems"><b>Display Random Poems</b></label>
+		<select class="w3-input w3-border" id="poems" name="sunrise" onchange="changePoems()">
+			<option value="off">Off</option>
+			<option value="randomly">At a random minute each hour</option>
+			<option value="hourly">At the top of each hour</option>
+		</select>
+	</div>
 </div>
 <div class="w3-container w3-cell">
   <button class="w3-btn w3-purple" onclick="showFutz()">Futz With Brightness</button>

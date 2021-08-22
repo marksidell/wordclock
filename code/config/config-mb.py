@@ -73,6 +73,24 @@ OCLOCK = Word('oclock', 10, 6, False)
 CLOCK = Word('clock', 10, 7, False)
 LOCK = Word('lock', 10, 8, False)
 
+SEA = Word('sea', 1, 2, True)
+VEN = Word('ven', 8, 2, True)
+EVE = Word('eve', 8, 3, True)
+SAT = Word('sat', 0, 4, True)
+NEO2 = Word('neo', 8, 4, True)
+YET2 = Word('yet', 2, 5, True)
+CONK = Word('conk', 7, 5, True)
+VAT = Word('vat', 6, 6, True)
+DO = Word('do', 9, 6, True)
+WE = Word('we', 8, 7, True)
+PA = Word('pa', 3, 8, True)
+TEA = Word('tea', 1, 9, True)
+ROT = Word('rot', 5, 9, True)
+GO = Word('go', 9, 9, True)
+EAST = Word('east', 1, 10, True)
+TOE = Word('toe', 3, 11, True)
+NET2 = Word('net', 7, 11, True)
+
 BIRTHDAYS = {
     BirthDate(3, 21): CAPN,
     BirthDate(9, 8): BUZZ,

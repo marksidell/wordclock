@@ -1321,7 +1321,7 @@ class Main():
 
                 if (TEST_POEMS or
                         poem_mode == POEMS_HOURLY and now_minute.minute == 0 or
-                        poem_mode == POEMS_HOURLY and now_minute.minute ==  self.random_minute):
+                        poem_mode == POEMS_RANDOMLY and now_minute.minute ==  self.random_minute):
 
                     do_clock = False
 

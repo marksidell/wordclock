@@ -48,8 +48,8 @@ AMBIENT_SMOOTHING_DEQUE_LEN = 5
 LONG_PRESS_DURATION = 3
 
 N_POEM_LINES = 4     # number of lines per poem
-POEM_LINE_PAUSE = 2  # pause between lines, in seconds
-POEM_END_PAUSE = 5   # pause at end of poem
+POEM_LINE_PAUSE = 1  # pause between lines, in seconds
+POEM_END_PAUSE = 4   # pause at end of poem
 
 SETTINGS_TITLE = '{} Clock'.format(config.CLOCK_NAME)
 
@@ -1436,6 +1436,7 @@ class Main():
         next_tic = time.time()
         indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
         cur_line = 0
+        color = random.choice(RANDOM_COLORS)
 
         while self.do_poem:
             if not self.button_presses:
@@ -1444,17 +1445,17 @@ class Main():
                 if now >= next_tic:
                     self.pixels.fill(COLOR_OFF)
                     self.set_word_border()
-                    color = random.choice(RANDOM_COLORS)
 
-                    for word in ALL_POEMS[indeces[cur_line]]:
-                        self.set_word(word, color=color)
+                    if cur_line < N_POEM_LINES:
+                        for word in ALL_POEMS[indeces[cur_line]]:
+                            self.set_word(word, color=color)
 
                     self.pixels.show()
 
                     cur_line += 1
                     next_tic = now
 
-                    if cur_line == N_POEM_LINES:
+                    if cur_line == N_POEM_LINES + 1:
                         cur_line = 0
                         next_tic += POEM_END_PAUSE
                     else:

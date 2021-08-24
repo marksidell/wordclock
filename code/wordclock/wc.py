@@ -103,6 +103,9 @@ RANDOM_COLORS = [
 def is_after(word0, word1):
     ''' Is word1 after word0 on the grid?
     '''
+    if word0.text == word1.text:
+        return False
+
     l_word0 = len(word0.text)
 
     if word0.vertical:

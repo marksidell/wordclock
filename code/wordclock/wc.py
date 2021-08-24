@@ -1324,8 +1324,10 @@ class Main():
                         poem_mode == POEMS_HOURLY and now_minute.minute ==  self.random_minute):
 
                     do_clock = False
-                    self.do_poem = True
-                    self.loop.create_task(self.display_poem())
+
+                    if not self.do_poem:
+                        self.do_poem = True
+                        self.loop.create_task(self.display_poem())
 
         if do_clock:
             self.do_birthday = False

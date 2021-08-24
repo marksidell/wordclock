@@ -36,7 +36,7 @@ import adafruit_veml7700
 
 from wordclock import __version__, config, magnetometer
 
-TEST_POEMS = True
+TEST_POEMS = False
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = True
 
@@ -120,8 +120,8 @@ def is_after(word0, word1):
     if word1.vertical:
         return (
             word1.y == word0.y and word1.x > word0_end
-            or word1.y > word0.y + 1
-            or word1.y == word0.y and (word1.x > word0_end or word1.x < word0.x - 1))
+            or word1.y == word0.y + 1 and (word1.x < word0.x - 1 or word1.x > word0_end)
+            or word1.y > word0.y + 1)
 
     return (
         word1.y == word0.y and word1.x > word0_end

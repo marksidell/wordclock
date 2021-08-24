@@ -38,7 +38,7 @@ from wordclock import __version__, config, magnetometer
 
 TEST_POEMS = True
 DO_CALIBRATION = False
-DO_RANDOM_WORD_POEMS = False
+DO_RANDOM_WORD_POEMS = True
 
 HOTSPOT_IP = '10.0.0.1'
 
@@ -1188,11 +1188,11 @@ class Main():
         while self.display_mode == DisplayMode.RANDOM_WORDS:
             if self.should_run(DisplayMode.RANDOM_WORDS):
                 self.pixels.fill(COLOR_OFF)
-                color = random.choice(RANDOM_COLORS)
 
                 self.set_word_border()
 
                 if do_word:
+                    color = random.choice(RANDOM_COLORS)
                     word = config.ALL_WORDS[random_indeces[random_index]]
                     random_index = (random_index + 1) % len(random_indeces)
 

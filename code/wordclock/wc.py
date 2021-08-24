@@ -36,6 +36,7 @@ import adafruit_veml7700
 
 from wordclock import __version__, config, magnetometer
 
+TEST_POEMS = True
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = False
 
@@ -45,6 +46,10 @@ COMPASS_JITTER_THRESHOLD = 10
 AMBIENT_SMOOTHING_DEQUE_LEN = 5
 
 LONG_PRESS_DURATION = 3
+
+N_POEM_LINES = 4     # number of lines per poem
+POEM_LINE_PAUSE = 2  # pause between lines, in seconds
+POEM_END_PAUSE = 5   # pause at end of poem
 
 SETTINGS_TITLE = '{} Clock'.format(config.CLOCK_NAME)
 
@@ -107,7 +112,17 @@ def is_after(word0, word1):
             word1.y >= word0.y and word1.y <= word0_end and word1.x > word0.x + 1
             or word1.y > word0_end)
 
-    return word1.y == word0.y and word1.x > word0.x + l_word0 or word1.y > word0.y
+    word0_end = word0.x + l_word0
+
+    if word1.vertical:
+        return (
+            word1.y == word0.y and word1.x > word0.end
+            or word1.y > word0.y + 1
+            or word1.y == word0.y and (word1.x > word0.end or word1.x < word0.x - 1))
+
+    return (
+        word1.y == word0.y and word1.x > word0_end
+        or word1.y > word0.y)
 
 
 def init_poems():
@@ -569,7 +584,7 @@ class Main():
 
         self.random_minute = 0
         self.poem_index = 0
-        self.do_poems = False
+        self.do_poem = False
 
         self.read_params()
 
@@ -892,7 +907,7 @@ class Main():
 
                 self.button_presses = 0
                 self.do_birthday = False
-                self.do_poems = False
+                self.do_poem = False
                 self.update_clock()
 
             await asyncio.sleep(0.1)
@@ -1187,7 +1202,9 @@ class Main():
                         self.set_word(poem_word, color=color)
 
                 self.pixels.show()
-                do_word = not (DO_RANDOM_WORD_POEMS or do_word and word.poems)
+
+                if DO_RANDOM_WORD_POEMS:
+                    do_word = not (do_word and word.poems)
 
             await asyncio.sleep(1)
 
@@ -1299,16 +1316,17 @@ class Main():
             else:
                 poem_mode = self.params[PARAM_POEMS]
 
-                if (poem_mode == POEMS_HOURLY and now_minute.minute == 0 or
+                if (TEST_POEMS or
+                        poem_mode == POEMS_HOURLY and now_minute.minute == 0 or
                         poem_mode == POEMS_HOURLY and now_minute.minute ==  self.random_minute):
 
                     do_clock = False
-                    self.do_poems = True
-                    self.loop.create_task(self.display_poems())
+                    self.do_poem = True
+                    self.loop.create_task(self.display_poem())
 
         if do_clock:
             self.do_birthday = False
-            self.do_poems = False
+            self.do_poem = False
 
             self.pixels.fill(COLOR_OFF)
             self.write_time(now_minute)
@@ -1407,29 +1425,37 @@ class Main():
 
             await asyncio.sleep(0.1)
 
-    async def display_poems(self):
-        ''' Display poems, a new one every 10 seconds.
+    async def display_poem(self):
+        ''' Display a poem
         '''
         next_tic = time.time()
+        indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
+        cur_line = 0
 
-        while self.do_poems:
+        while self.do_poem:
             if not self.button_presses:
                 now = time.time()
 
                 if now >= next_tic:
-                    next_tic = now + 10
-
                     self.pixels.fill(COLOR_OFF)
                     self.set_word_border()
                     color = random.choice(RANDOM_COLORS)
 
-                    for word in ALL_POEMS[self.poem_index]:
+                    for word in ALL_POEMS[indeces[cur_line]]:
                         self.set_word(word, color=color)
 
                     self.pixels.show()
-                    self.poem_index = (self.poem_index + 1) % len(ALL_POEMS)
 
-            await asyncio.sleep(0.5)
+                    cur_line += 1
+                    next_tic = now
+
+                    if cur_line == N_POEM_LINES:
+                        cur_line = 0
+                        next_tic += POEM_END_PAUSE
+                    else:
+                        next_tic += POEM_LINE_PAUSE
+
+            await asyncio.sleep(0.25)
 
     def set_day(self, now_minute):
         ''' bump the day
@@ -1587,6 +1613,13 @@ class Main():
         return datetime.datetime.fromtimestamp(
             round((timestamp + offset*60) / (5*60)) * 5*60,
             tz=self.timezone)
+
+    def get_next_poem_index(self):
+        ''' Return the next random poem index
+        '''
+        index = self.poem_index
+        self.poem_index = (self.poem_index + 1) % len(ALL_POEMS)
+        return index
 
 
 def check_wifi(debug):

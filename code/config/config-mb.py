@@ -2,7 +2,6 @@
 Configuration for the Mark & Beth clock
 '''
 
-import datetime
 from wordclock.configdefs import Word, BirthDate
 
 VERSION_2 = True
@@ -91,6 +90,17 @@ EAST = Word('east', 1, 10, True)
 TOE = Word('toe', 3, 11, True)
 NET2 = Word('net', 7, 11, True)
 
+A0 = Word('a', 0, 7, False)
+A1 = Word('a', 1, 1, False)
+A2 = Word('a', 1, 4, False)
+A3 = Word('a', 2, 10, False)
+A4 = Word('a', 3, 2, False)
+A5 = Word('a', 3, 9, False)
+A6 = Word('a', 4, 8, False)
+A7 = Word('a', 7, 0, False)
+A8 = Word('a', 7, 6, False)
+
+
 BIRTHDAYS = {
     BirthDate(3, 21): CAPN,
     BirthDate(9, 8): BUZZ,
@@ -168,4 +178,14 @@ ALL_WORDS = [
     EAST,
     TOE,
     NET2,
+
+    A0,
+    A1,
+    A2,
+    A3,
+    A4,
+    A5,
+    A6,
+    A7,
+    A8,
 ]

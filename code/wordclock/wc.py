@@ -48,7 +48,7 @@ AMBIENT_SMOOTHING_DEQUE_LEN = 5
 LONG_PRESS_DURATION = 3
 
 N_POEM_LINES = 4     # number of lines per poem
-POEM_LINE_PAUSE = 1  # pause between lines, in seconds
+POEM_LINE_PAUSE = 2  # pause between lines, in seconds
 POEM_END_PAUSE = 4   # pause at end of poem
 
 SETTINGS_TITLE = '{} Clock'.format(config.CLOCK_NAME)

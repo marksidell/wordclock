@@ -119,9 +119,9 @@ def is_after(word0, word1):
 
     if word1.vertical:
         return (
-            word1.y == word0.y and word1.x > word0.end
+            word1.y == word0.y and word1.x > word0_end
             or word1.y > word0.y + 1
-            or word1.y == word0.y and (word1.x > word0.end or word1.x < word0.x - 1))
+            or word1.y == word0.y and (word1.x > word0_end or word1.x < word0.x - 1))
 
     return (
         word1.y == word0.y and word1.x > word0_end

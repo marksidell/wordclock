@@ -3,7 +3,7 @@ Configuration for the Elle & Ale clock
 '''
 
 import datetime
-from wordclock.configdefs import Word, BirthDate
+from wordclock.configdefs import Word, BirthDate, SpecialBirthday
 
 VERSION_2 = True
 
@@ -104,7 +104,11 @@ BIRTHDAYS = {
     BirthDate(8, 3): AUGGIE,
 }
 
-SPECIAL_BIRTHDAY = None
+SPECIAL_BIRTHDAY = SpecialBirthday(
+    ELLE,
+    datetime.date(2021, 8, 25),
+    datetime.date(2021, 8, 31))
+
 
 ALL_WORDS = [
     IT,

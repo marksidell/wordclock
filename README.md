@@ -21,6 +21,7 @@ See the `README` file in each directory for more information.
 |------|-------------|
 | <a href="https://github.com/marksidell/wordclock/tree/main/carbide3d" target="_blank">carbide3d</a> | Carbide Create designs for various clock components. |
 | <a href="https://github.com/marksidell/wordclock/tree/main/code" target="_blank">code</a> | The code that needs to be copied to the Pi. |
+| <a href="https://github.com/marksidell/wordclock/tree/main/code" target="_blank">docs</a> | The manual and other printed material. |
 | <a href="https://github.com/marksidell/wordclock/tree/main/face" target="_blank">face</a> | Adobe Illustrator face designs for the clocks I've built. |
 | <a href="https://github.com/marksidell/wordclock/tree/main/pcbs" target="_blank">pcbs</a> | KiCad printed circuit board designs. |
 

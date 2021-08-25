@@ -1,5 +1,5 @@
 '''
-Configuration for the Elle & Alex clock
+Configuration for the Elle & Ale clock
 '''
 
 import datetime
@@ -7,7 +7,7 @@ from wordclock.configdefs import Word, BirthDate
 
 VERSION_2 = True
 
-CLOCK_NAME = "Elle &amp; Alex"
+CLOCK_NAME = "Elle &amp; Ale"
 
 LAT = 28.610940839823634
 LONG = -81.33362929069895
@@ -66,6 +66,7 @@ H_SEVEN = Word('seven', 9, 7, False)
 H_ELEVEN = Word('eleven', 5, 0, True)
 
 H_NINE = Word('nine', 10, 0, False)
+NO = Word('no', 10, 0, False)
 NEO = Word('neo', 10, 2, False)
 OK = Word('ok', 10, 4, False)
 OCLOCK = Word('oclock', 10, 6, False)
@@ -84,6 +85,16 @@ TEA = Word('tea', 1, 9, True)
 EAST = Word('east', 1, 10, True)
 TOE = Word('toe', 3, 11, True)
 HEN = Word('hen', 7, 11, True)
+
+A0 = Word('a', 0, 7, False)
+A1 = Word('a', 1, 1, False)
+A2 = Word('a', 1, 4, False)
+A3 = Word('a', 2, 10, False)
+A4 = Word('a', 3, 2, False)
+A5 = Word('a', 3, 9, False)
+A6 = Word('a', 4, 8, False)
+A7 = Word('a', 7, 10, False)
+A8 = Word('a', 8, 1, False)
 
 
 BIRTHDAYS = {
@@ -138,6 +149,7 @@ ALL_WORDS = [
     H_ELEVEN,
     H_EIGHT,
     H_NINE,
+    NO,
     NEO,
     OK,
     OCLOCK,
@@ -155,4 +167,14 @@ ALL_WORDS = [
     EAST,
     TOE,
     HEN,
+
+    A0,
+    A1,
+    A2,
+    A3,
+    A4,
+    A5,
+    A6,
+    A7,
+    A8,
 ]

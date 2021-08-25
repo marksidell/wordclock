@@ -103,9 +103,6 @@ RANDOM_COLORS = [
 def is_after(word0, word1):
     ''' Is word1 after word0 on the grid?
     '''
-    if word0.text == word1.text:
-        return False
-
     l_word0 = len(word0.text)
 
     if word0.vertical:
@@ -128,6 +125,12 @@ def is_after(word0, word1):
         or word1.y > word0.y)
 
 
+def is_after_no_dup(word0, word1):
+    ''' Is word1 after word0 on the grid, and are the words not the same?
+    '''
+    return word0.text != word1.text and is_after(word0, word1)
+
+
 def init_poems():
     ''' Calculate poems.
         Store a list of poems that start with each word.
@@ -137,14 +140,14 @@ def init_poems():
     all_words_in_grid_order = sorted(config.ALL_WORDS, key=lambda x: (x.y, x.x))
 
     for word0 in all_words_in_grid_order:
-        word0.after = [word1 for word1 in all_words_in_grid_order if is_after(word0, word1)]
+        word0.after = [word1 for word1 in all_words_in_grid_order if is_after_no_dup(word0, word1)]
 
     for word0 in all_words_in_grid_order:
         word0.poems = [
             (word0, word1, word2)
             for word1 in word0.after
             for word2 in word1.after
-            if word0.after and word1.after]
+            if is_after(word0, word2) and word2.text != 'a']
 
     poems = [poem for word in all_words_in_grid_order for poem in word.poems]
     random.shuffle(poems)

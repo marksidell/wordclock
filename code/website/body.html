@@ -1,4 +1,4 @@
-e<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <title>{title}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -53,6 +53,14 @@ e<!DOCTYPE html>
 		<div hidden id="err_password" class="w3-container w3-red"><span id="errmsg_password"></span></div>
 	</div>
 	<div class="w3-container">
+		<label class="w3-text-blue" for="poems"><b>Be Poetic</b></label>
+		<select class="w3-input w3-border" id="poems" name="sunrise" onchange="changePoems()">
+			<option value="off">Never</option>
+			<option value="randomly">At a random minute each hour</option>
+			<option value="hourly">At the top of each hour</option>
+		</select>
+	</div>
+	<div class="w3-container">
 		<label class="w3-text-blue" for="lat"><b>Latitude</b></label>
 		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="lat" name="lat"
 		  type="text" maxlength="20" placeholder="Example: 35.912" onchange="changeLat()">
@@ -94,14 +102,6 @@ e<!DOCTYPE html>
 			<option value="compass">Use Compass</option>
 			<option value="left">Left Side</option>
 			<option value="right">Right Side</option>
-		</select>
-	</div>
-	<div class="w3-container">
-		<label class="w3-text-blue" for="poems"><b>Be Poetic</b></label>
-		<select class="w3-input w3-border" id="poems" name="sunrise" onchange="changePoems()">
-			<option value="off">Never</option>
-			<option value="randomly">At a random minute each hour</option>
-			<option value="hourly">At the top of each hour</option>
 		</select>
 	</div>
 </div>

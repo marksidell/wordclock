@@ -2,7 +2,7 @@
 The wordclock package
 '''
 
-__version__ = '1'
+__version__ = '2'
 __author__ = 'Mark Sidell'
 __author_email__ = 'mark@sidell.org'
 __url__ = 'https://github.com/marksidell/wordclock'

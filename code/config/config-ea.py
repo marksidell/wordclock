@@ -10,7 +10,7 @@ VERSION_2 = True
 CLOCK_NAME = "Elle &amp; Ale"
 
 LAT = 28.610940839823634
-LONG = -81.33362929069895
+LON = -81.33362929069895
 
 IT = Word('it', 0, 0, False)
 TWIST = Word('twist', 0, 1, False)
@@ -106,8 +106,8 @@ BIRTHDAYS = {
 
 SPECIAL_BIRTHDAY = SpecialBirthday(
     ELLE,
-    datetime.date(2021, 8, 25),
-    datetime.date(2021, 8, 31))
+    datetime.date(2021, 8, 28),
+    datetime.date(2021, 9, 5))
 
 
 ALL_WORDS = [

@@ -69,7 +69,6 @@ H_NINE = Word('nine', 10, 2, False)
 NO = Word('no', 10, 0, False)
 NON = Word('non', 10, 0, False)
 NEO = Word('neo', 10, 4, False)
-OK = Word('ok', 10, 4, False)
 OCLOCK = Word('oclock', 10, 6, False)
 CLOCK = Word('clock', 10, 7, False)
 LOCK = Word('lock', 10, 8, False)
@@ -157,7 +156,6 @@ ALL_WORDS = [
     NO,
     NON,
     NEO,
-    OK,
     OCLOCK,
     CLOCK,
     LOCK,

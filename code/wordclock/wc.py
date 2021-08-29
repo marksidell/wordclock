@@ -38,7 +38,7 @@ from wordclock import __version__, config, magnetometer
 
 TEST_POEMS = False
 DO_CALIBRATION = False
-DO_RANDOM_WORD_POEMS = True
+DO_RANDOM_WORD_POEMS = False
 
 HOTSPOT_IP = '10.0.0.1'
 

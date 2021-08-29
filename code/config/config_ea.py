@@ -34,6 +34,7 @@ T_QUARTER = Word('quarter', 3, 0, False)
 REPAST = Word('repast', 3, 6, False)
 PAST = Word('past', 3, 8, False)
 AS1 = Word('as', 3, 9, False)
+TO1 = Word('to', 3, 11, False)
 
 ORB = Word('orb', 4, 0, False)
 BIRTH = Word('birth', 4, 2, False)
@@ -41,27 +42,30 @@ BIRTHDAY = Word('birthday', 4, 2, False)
 DAY = Word('day', 4, 7, False)
 TO = Word('to', 4, 10, False)
 
-H_ONE = Word('one', 5, 1, False)
-NET = Word('net', 5, 2, False)
-H_TWO = Word('two', 5, 4, False)
-H_THREE = Word('three', 5, 7, False)
+H_FOUR = Word('four', 5, 5, False)
+OUR = Word('ou4', 5, 2, False)
+H_FIVE = Word('five', 5, 1, False)
+H_SIX = Word('six', 5, 9, False)
 
-H_FOUR = Word('four', 6, 1, False)
-OUR = Word('ou4', 6, 2, False)
-H_FIVE = Word('five', 6, 5, False)
-H_SIX = Word('six', 6, 9, False)
+AUGGIE = Word('auggie', 6, 1, False)
+ELLE = Word('elle', 6, 6, False)
+EON = Word('eon', 6, 9, False)
+LEO = Word('leo', 6, 8, False)
+ALE = Word('ale', 6, 1, True)
 
-H_EIGHT = Word('eight', 7, 0, False)
-H_TEN = Word('ten', 7, 4, False)
-ELIAH = Word('eliah', 7, 7, False)
-ALE = Word('ale', 7, 10, True)
+H_EIGHT = Word('eight', 7, 7, False)
+ELIAH = Word('eliah', 7, 1, False)
+HEIGHT = Word('height', 7, 6, False)
+TEE = Word('tee', 7, 11, True)
 
-AUGGIE = Word('auggie', 8, 1, False)
-ELLE = Word('elle', 8, 8, False)
-EVE = Word('eve', 8, 6, False)
+H_ONE = Word('one', 8, 4, False)
+VET = Word('net', 8, 0, False)
+H_TWO = Word('two', 8, 2, False)
+H_THREE = Word('three', 8, 7, False)
+H_TEN = Word('ten', 8, 2, True)
 
-H_TWELVE = Word('twelve', 9, 1, False)
-H_SEVEN = Word('seven', 9, 7, False)
+H_SEVEN = Word('seven', 9, 1, False)
+H_TWELVE = Word('twelve', 9, 6, False)
 
 H_ELEVEN = Word('eleven', 5, 0, True)
 
@@ -79,7 +83,7 @@ TOM = Word('tom', 9, 1, True)
 SEA = Word('sea', 1, 2, True)
 NOG = Word('nog', 5, 2, True)
 SAT = Word('sat', 0, 4, True)
-YET2 = Word('vet', 2, 5, True)
+YET2 = Word('yet', 2, 5, True)
 EEL = Word('eel', 8, 8, True)
 TEA = Word('tea', 1, 9, True)
 EAST = Word('east', 1, 10, True)
@@ -93,8 +97,8 @@ A3 = Word('a', 2, 10, False)
 A4 = Word('a', 3, 2, False)
 A5 = Word('a', 3, 9, False)
 A6 = Word('a', 4, 8, False)
-A7 = Word('a', 7, 10, False)
-A8 = Word('a', 8, 1, False)
+A7 = Word('a', 6, 1, False)
+A8 = Word('a', 7, 5, False)
 
 
 BIRTHDAYS = {
@@ -130,23 +134,27 @@ ALL_WORDS = [
     REPAST,
     PAST,
     AS1,
+    TO1,
     ORB,
     BIRTH,
     BIRTHDAY,
     DAY,
     TO,
     H_ONE,
-    NET,
+    VET,
     H_TWO,
     H_THREE,
     H_SIX,
     H_FIVE,
     H_FOUR,
     ELIAH,
-    ALE,
+    HEIGHT,
+    TEE,
     AUGGIE,
     ELLE,
-    EVE,
+    EON,
+    LEO,
+    ALE,
     H_TEN,
     H_SEVEN,
     H_TWELVE,

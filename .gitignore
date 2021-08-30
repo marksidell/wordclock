@@ -7,3 +7,4 @@ code/wordclock/s3config.py
 fp-info-cache
 ~syncthing*
 docs/~$manual.docx
+__pycache__

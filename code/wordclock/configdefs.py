@@ -4,6 +4,8 @@ Namedtuples used in the config files
 
 from collections import namedtuple
 
+ALL_WORDS = []
+
 class Word:
     ''' Defines a word on the clock face
     '''
@@ -22,6 +24,9 @@ class Word:
         self.vertical = vertical
         self.after = None
         self.poems = None
+
+        ALL_WORDS.append(self)
+
 
 # Defines a birthday
 #

@@ -38,7 +38,7 @@ from wordclock import __version__, config, magnetometer
 
 TEST_POEMS = False
 DO_CALIBRATION = False
-DO_RANDOM_WORD_POEMS = False
+DO_RANDOM_WORD_POEMS = True
 
 HOTSPOT_IP = '10.0.0.1'
 
@@ -137,7 +137,7 @@ def init_poems():
         Return a list of all poems, shuffled.
     '''
     # All words ordered by their position in the grid, left to right, top to bottom.
-    all_words_in_grid_order = sorted(config.ALL_WORDS, key=lambda x: (x.y, x.x))
+    all_words_in_grid_order = sorted(configdefs.ALL_WORDS, key=lambda x: (x.y, x.x))
 
     for word0 in all_words_in_grid_order:
         word0.after = [word1 for word1 in all_words_in_grid_order if is_after_no_dup(word0, word1)]
@@ -1183,7 +1183,7 @@ class Main():
     async def display_random(self):
         ''' Update random workds
         '''
-        random_indeces = list(range(len(config.ALL_WORDS)))
+        random_indeces = list(range(len(configdefs.ALL_WORDS)))
         random.shuffle(random_indeces)
         do_word = True
         random_index = 0
@@ -1196,7 +1196,7 @@ class Main():
 
                 if do_word:
                     color = random.choice(RANDOM_COLORS)
-                    word = config.ALL_WORDS[random_indeces[random_index]]
+                    word = configdefs.ALL_WORDS[random_indeces[random_index]]
                     random_index = (random_index + 1) % len(random_indeces)
 
                     if self.args.debug:

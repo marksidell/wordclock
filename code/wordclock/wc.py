@@ -1502,7 +1502,7 @@ class Main():
         '''
         for i in range(BORDER_PIXELS_BASE, BORDER_PIXELS_END):
             self.set_pixel(i, COLOR_RANDOM_BORDER)
-        
+
     def set_numeric_pixel(self, index, color):
         ''' Set a numeric pixel
         '''

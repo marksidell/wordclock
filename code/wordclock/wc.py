@@ -1190,8 +1190,8 @@ class Main():
 
         while self.display_mode == DisplayMode.RANDOM_WORDS:
             if self.should_run(DisplayMode.RANDOM_WORDS):
-                self.pixels.fill(COLOR_OFF)
 
+                self.pixels.fill(COLOR_OFF)
                 self.set_word_border()
 
                 if word_index == 0:
@@ -1210,10 +1210,7 @@ class Main():
                     for poem_word in poem[:word_index+1]:
                         self.set_word(poem_word, color=color)
 
-                    sleep_time = 0.25
-
-                else:
-                    sleep_time = 1
+                    sleep_time = 1 if word_index == len(poem) - 1 else 0.25
 
                 self.pixels.show()
                 word_index = (word_index + 1) % (len(poem) + 1)

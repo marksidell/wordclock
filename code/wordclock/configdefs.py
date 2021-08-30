@@ -9,6 +9,8 @@ ALL_WORDS = []
 class Word:
     ''' Defines a word on the clock face
     '''
+    #pylint: disable=too-few-public-methods
+
     def __init__(self, text, y, x, vertical=False):
         '''
         text: The word text, used to calculate its length
@@ -19,8 +21,8 @@ class Word:
         poems:    # A list of poems starting with this word
         '''
         self.text = text
-        self.y = y
-        self.x = x
+        self.y = y #pylint: disable=invalid-name
+        self.x = x #pylint: disable=invalid-name
         self.vertical = vertical
         self.after = None
         self.poems = None

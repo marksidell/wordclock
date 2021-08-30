@@ -1185,8 +1185,8 @@ class Main():
         '''
         random_indeces = list(range(len(configdefs.ALL_WORDS)))
         random.shuffle(random_indeces)
-        do_word = True
         random_index = 0
+        word_index = 0
 
         while self.display_mode == DisplayMode.RANDOM_WORDS:
             if self.should_run(DisplayMode.RANDOM_WORDS):
@@ -1194,25 +1194,34 @@ class Main():
 
                 self.set_word_border()
 
-                if do_word:
+                if word_index == 0:
                     color = random.choice(RANDOM_COLORS)
                     word = configdefs.ALL_WORDS[random_indeces[random_index]]
                     random_index = (random_index + 1) % len(random_indeces)
+                    poem = random.choice(word.poems) if DO_RANDOM_WORD_POEMS and word.poems else []
 
                     if self.args.debug:
-                        print(word.text)
+                        print(word)
 
                     self.set_word(word, color=color)
-                else:
-                    for poem_word in random.choice(word.poems):
+                    sleep_time = 1
+
+                elif word_index < len(poem):
+                    for poem_word in poem[:word_index+1]:
                         self.set_word(poem_word, color=color)
 
+                    sleep_time = 0.25
+
+                else:
+                    sleep_time = 1
+
                 self.pixels.show()
+                word_index = (word_index + 1) % (len(poem) + 1)
 
-                if DO_RANDOM_WORD_POEMS:
-                    do_word = not (do_word and word.poems)
+            else:
+                sleep_time = 0.1
 
-            await asyncio.sleep(1)
+            await asyncio.sleep(sleep_time)
 
     async def display_birthday_demo(self):
         ''' Update the clock in demo mode

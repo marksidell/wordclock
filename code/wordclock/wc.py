@@ -47,9 +47,13 @@ AMBIENT_SMOOTHING_DEQUE_LEN = 5
 
 LONG_PRESS_DURATION = 3
 
-N_POEM_LINES = 4     # number of lines per poem
-POEM_LINE_PAUSE = 2  # pause between lines, in seconds
-POEM_END_PAUSE = 4   # pause at end of poem
+N_POEM_LINES = 4       # number of lines per poem
+N_POEM_LINE_WORDS = 3  # number of words in a line
+POEM_WORD_PAUSE = 0.25 # pause between words, in seconds
+POEM_LINE_PAUSE = 2    # pause between lines
+POEM_END_PAUSE = 4     # pause at end of poem
+
+RANDOM_WORD_PAUSE = 1
 
 SETTINGS_TITLE = '{} Clock'.format(config.CLOCK_NAME)
 
@@ -1204,13 +1208,14 @@ class Main():
                         print(word)
 
                     self.set_word(word, color=color)
-                    sleep_time = 1
+                    sleep_time = RANDOM_WORD_PAUSE
 
                 elif word_index < len(poem):
                     for poem_word in poem[:word_index+1]:
                         self.set_word(poem_word, color=color)
 
-                    sleep_time = 1 if word_index == len(poem) - 1 else 0.25
+                    sleep_time = (
+                        RANDOM_WORD_PAUSE if word_index == len(poem) - 1 else POEM_WORD_PAUSE)
 
                 self.pixels.show()
                 word_index = (word_index + 1) % (len(poem) + 1)
@@ -1442,35 +1447,35 @@ class Main():
     async def display_poem(self):
         ''' Display a poem
         '''
-        next_tic = time.time()
         indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
         cur_line = 0
+        cur_word = 0
         color = random.choice(RANDOM_COLORS)
 
         while self.do_poem:
             if not self.button_presses:
-                now = time.time()
+                self.pixels.fill(COLOR_OFF)
+                self.set_word_border()
 
-                if now >= next_tic:
-                    self.pixels.fill(COLOR_OFF)
-                    self.set_word_border()
+                for word in ALL_POEMS[indeces[cur_line]][:cur_word+1]:
+                    self.set_word(word, color=color)
 
-                    if cur_line < N_POEM_LINES:
-                        for word in ALL_POEMS[indeces[cur_line]]:
-                            self.set_word(word, color=color)
+                self.pixels.show()
 
-                    self.pixels.show()
+                cur_word += 1
 
+                if cur_word == N_POEM_LINE_WORDS:
+                    cur_word = 0
                     cur_line += 1
-                    next_tic = now
+                    sleep_time = POEM_END_PAUSE if cur_line == N_POEM_LINES else POEM_LINE_PAUSE
 
-                    if cur_line == N_POEM_LINES + 1:
-                        cur_line = 0
-                        next_tic += POEM_END_PAUSE
-                    else:
-                        next_tic += POEM_LINE_PAUSE
+                else:
+                    sleep_time = POEM_WORD_PAUSE
 
-            await asyncio.sleep(0.25)
+            else:
+                sleep_time = 0.1
+
+            await asyncio.sleep(sleep_time)
 
     def set_day(self, now_minute):
         ''' bump the day

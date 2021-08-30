@@ -34,7 +34,7 @@ import board
 import busio
 import adafruit_veml7700
 
-from wordclock import __version__, config, magnetometer
+from wordclock import __version__, config, magnetometer, configdefs
 
 TEST_POEMS = False
 DO_CALIBRATION = False

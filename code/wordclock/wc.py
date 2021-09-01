@@ -36,7 +36,7 @@ import adafruit_veml7700
 
 from wordclock import __version__, config, magnetometer, configdefs
 
-TEST_POEMS = True
+TEST_POEMS = False
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = True
 

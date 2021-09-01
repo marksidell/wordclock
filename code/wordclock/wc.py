@@ -1447,13 +1447,16 @@ class Main():
     async def display_poem(self):
         ''' Display a poem
         '''
-        indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
+        indeces = None
         cur_line = 0
         cur_word = 0
         color = random.choice(RANDOM_COLORS)
 
         while self.do_poem:
             if not self.button_presses:
+                if not indeces:
+                    indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
+
                 self.pixels.fill(COLOR_OFF)
                 self.set_word_border()
 
@@ -1471,6 +1474,9 @@ class Main():
                     if cur_line == N_POEM_LINES:
                         cur_line = 0
                         sleep_time = POEM_END_PAUSE
+
+                        if TEST_POEMS:
+                            indeces = None
                     else:
                         sleep_time = POEM_LINE_PAUSE
                 else:

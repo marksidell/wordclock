@@ -36,7 +36,7 @@ import adafruit_veml7700
 
 from wordclock import __version__, config, magnetometer, configdefs
 
-TEST_POEMS = False
+TEST_POEMS = True
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = True
 
@@ -1185,7 +1185,7 @@ class Main():
             await asyncio.sleep(sleep)
 
     async def display_random(self):
-        ''' Update random workds
+        ''' Update random words
         '''
         random_indeces = list(range(len(configdefs.ALL_WORDS)))
         random.shuffle(random_indeces)
@@ -1467,8 +1467,12 @@ class Main():
                 if cur_word == N_POEM_LINE_WORDS:
                     cur_word = 0
                     cur_line += 1
-                    sleep_time = POEM_END_PAUSE if cur_line == N_POEM_LINES else POEM_LINE_PAUSE
 
+                    if cur_line == N_POEM_LINES:
+                        cur_line = 0
+                        sleep_time = POEM_END_PAUSE
+                    else:
+                        sleep_time = POEM_LINE_PAUSE
                 else:
                     sleep_time = POEM_WORD_PAUSE
 

@@ -52,6 +52,7 @@ N_POEM_LINE_WORDS = 3  # number of words in a line
 POEM_WORD_PAUSE = 0.25 # pause between words, in seconds
 POEM_LINE_PAUSE = 2    # pause between lines
 POEM_END_PAUSE = 4     # pause at end of poem
+INTER_POEM_PAUSE = 0.5
 
 RANDOM_WORD_PAUSE = 1
 
@@ -1460,8 +1461,9 @@ class Main():
                 self.pixels.fill(COLOR_OFF)
                 self.set_word_border()
 
-                for word in ALL_POEMS[indeces[cur_line]][:cur_word+1]:
-                    self.set_word(word, color=color)
+                if cur_line != N_POEM_LINES:
+                    for word in ALL_POEMS[indeces[cur_line]][:cur_word+1]:
+                        self.set_word(word, color=color)
 
                 self.pixels.show()
 
@@ -1472,11 +1474,14 @@ class Main():
                     cur_line += 1
 
                     if cur_line == N_POEM_LINES:
-                        cur_line = 0
                         sleep_time = POEM_END_PAUSE
 
                         if TEST_POEMS:
                             indeces = None
+
+                    elif cur_line > N_POEM_LINES:
+                        cur_line = 0
+                        sleep_time = INTER_POEM_PAUSE
                     else:
                         sleep_time = POEM_LINE_PAUSE
                 else:

@@ -1,0 +1,85 @@
+'''
+Read a text file consisting of a letter grid and print
+the words.
+'''
+import sys
+from argparse import ArgumentParser
+from collections import defaultdict
+import enchant
+
+DELTAS = [
+    'five', 'ten', 'quarter', 'twenty', 'twentyfive', 'half'
+    ]
+
+HOURS = [
+    'one', 'two', 'three', 'four', 'five', 'six',
+    'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
+    ]
+
+SPECIAL_WORDS = [
+    'twentyfive', 'oclock']
+
+HOURS_ROW = 5
+
+
+def add_word(all_words, names, my_words, row, col, vertical, word):
+    ''' Maybe add a word
+    '''
+    if (len(word) > 1 and (
+            word in SPECIAL_WORDS or
+            word in names or
+            all_words.check(word))
+            or word == 'a'):
+
+        word_u = word.upper()
+        index = my_words[word]
+        my_words[word] += 1
+
+        if word in DELTAS and row < HOURS_ROW:
+            name = f'T_{word_u}'
+        elif word in HOURS and row >= HOURS_ROW:
+            name = f'H_{word_u}'
+        else:
+            name = word_u if index == 0 else f'{word_u}_{index}'
+
+        print(f'{name} = Word(\'{word}\', {row}, {col}, {vertical})')
+    
+
+def main():
+    ''' do it
+    '''
+    parser = ArgumentParser()
+    parser.add_argument('grid')
+    parser.add_argument('--names', nargs='+', required=True)
+    args = parser.parse_args()
+
+    grid = [line.strip().lower() for line in open(args.grid, 'r')]
+    dim = len(grid)
+
+    if any(len(row) != dim for row in grid):
+        print('ERROR: The grid is not square')
+        sys.exit(1)
+
+    all_words = enchant.Dict('en_US')
+    my_words = defaultdict(int)
+
+    for row in range(dim - 1):
+        for col in range(dim):
+            for j in range(col+1, dim+1):
+                add_word(
+                    all_words, args.names, my_words, row, col, False, grid[row][col:j])
+
+        print('')
+
+    for col in range(dim):
+        for row in range(dim - 1):
+            for j in range(row+1, dim):
+                add_word(
+                    all_words, args.names, my_words, row, col, True,
+                    ''.join([grid[i][col] for i in range(row, j)]))
+
+        print('')
+
+
+if __name__ == "__main__":
+    main()

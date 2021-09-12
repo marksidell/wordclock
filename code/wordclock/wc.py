@@ -603,7 +603,7 @@ class Main():
         self.pixels = neopixel.NeoPixel(PIN_PIXELS, N_PIXELS, auto_write=False)
 
         
-        print(f'words={len(configdefs.ALL_WORDS} poems={len(ALL_POEMS)}')
+        print(f'words={len(configdefs.ALL_WORDS)} poems={len(ALL_POEMS)}')
 
 
     def main(self):

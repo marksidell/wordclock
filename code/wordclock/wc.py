@@ -156,9 +156,6 @@ def init_poems():
 
     poems = [poem for word in all_words_in_grid_order for poem in word.poems]
     random.shuffle(poems)
-
-    print(f'words={len(all_words_in_grid_order)} poems={len(poems)}')
-
     return poems
 
 
@@ -604,6 +601,10 @@ class Main():
         self.read_params()
 
         self.pixels = neopixel.NeoPixel(PIN_PIXELS, N_PIXELS, auto_write=False)
+
+        
+        print(f'words={len(configdefs.ALL_WORDS} poems={len(ALL_POEMS)}')
+
 
     def main(self):
         ''' do it

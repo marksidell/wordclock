@@ -1,16 +1,15 @@
 '''
-Configuration for the Elle & Alex clock
+Configuration for the Doug & Marguerite clock
 '''
 
 import datetime
-from wordclock.configdefs import Word, BirthDate
+from wordclock.configdefs import Word, BirthDate, SpecialBirthday
 
-VERSION_2 = True
+VERSION_2 = False
 
-CLOCK_NAME = "Elle &amp; Alex"
-
-LAT = 28.610940839823634
-LONG = -81.33362929069895
+CLOCK_NAME = 'Holmgren-Rogers'
+LAT = 45.45918
+LON = -122.72911
 
 IT = Word('it', 0, 0, False)
 TWIST = Word('twist', 0, 1, False)
@@ -52,16 +51,16 @@ H_FIVE = Word('five', 6, 5, False)
 H_SIX = Word('six', 6, 9, False)
 
 H_EIGHT = Word('eight', 7, 0, False)
-H_TEN = Word('ten', 7, 4, False)
-ELIAH = Word('eliah', 7, 7, False)
-ALE = Word('ale', 7, 10, True)
+DOUG = Word('doug', 7, 5, False)
+GO = Word('go', 7, 8, False)
+GOAL = Word('goal', 7, 8, False)
 
-AUGGIE = World('auggie', 8, 1, False)
-ELLE = Word('elle', 8, 8, False)
-EVE = Word('eve', 8, 6, False)
+MARGUERITE = Word('marguerite', 8, 1, False)
+IT2 = Word('it', 8, 8, False)
+H_TEN = Word('ten', 8, 9, False)
 
-H_TWELVE = Word('twelve', 9, 1, False)
-H_SEVEN = Word('seven', 9, 7, False)
+H_SEVEN = Word('seven', 9, 1, False)
+H_TWELVE = Word('twelve', 9, 6, False)
 
 H_ELEVEN = Word('eleven', 5, 0, True)
 
@@ -73,60 +72,11 @@ CLOCK = Word('clock', 10, 7, False)
 LOCK = Word('lock', 10, 8, False)
 
 BIRTHDAYS = {
-    BirthDate(8, 25): ELLE,
-    BirthDate(5, 13): ALE,
-    BirthDate(6, 5): ELIAH,
-    BirthDate(8, 3): AUGGIE,
+    BirthDate(2, 20): DOUG,
+    BirthDate(9, 17): MARGUERITE,
 }
 
-SPECIAL_BIRTHDAY = None
-
-ALL_WORDS = [
-    IT,
-    TWIST,
-    IS,
-    T_HALF,
-    FOR,
-    MASH,
-    AS0,
-    ASH,
-    HAPPY,
-    YET,
-    T_TEN,
-    T_TWENTY,
-    T_FIVE,
-    T_TWENTYFIVE,
-    EAR,
-    T_QUARTER,
-    REPAST,
-    PAST,
-    AS1,
-    ORB,
-    BIRTH,
-    BIRTHDAY,
-    DAY,
-    TO,
-    H_ONE,
-    NET,
-    H_TWO,
-    H_THREE,
-    H_SIX,
-    H_FIVE,
-    H_FOUR,
-    ELIAH,
-    ALE,
-    AUGGIE,
-    ELLE,
-    EVE,
-    H_TEN,
-    H_SEVEN,
-    H_TWELVE,
-    H_ELEVEN,
-    H_EIGHT,
-    H_NINE,
-    NEO,
-    OK,
-    OCLOCK,
-    CLOCK,
-    LOCK,
-]
+SPECIAL_BIRTHDAY = SpecialBirthday(
+    DOUG,
+    datetime.date(2021, 3, 11),
+    datetime.date(2021, 3, 17))

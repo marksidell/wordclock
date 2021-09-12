@@ -2,7 +2,6 @@
 Configuration for the Mark & Beth clock
 '''
 
-import datetime
 from wordclock.configdefs import Word, BirthDate
 
 VERSION_2 = True
@@ -73,63 +72,38 @@ OCLOCK = Word('oclock', 10, 6, False)
 CLOCK = Word('clock', 10, 7, False)
 LOCK = Word('lock', 10, 8, False)
 
+SEA = Word('sea', 1, 2, True)
+VEN = Word('ven', 8, 2, True)
+EVE = Word('eve', 8, 3, True)
+SAT = Word('sat', 0, 4, True)
+NEO2 = Word('neo', 8, 4, True)
+YET2 = Word('yet', 2, 5, True)
+CONK = Word('conk', 7, 5, True)
+VAT = Word('vat', 6, 6, True)
+DO = Word('do', 9, 6, True)
+WE = Word('we', 8, 7, True)
+PA = Word('pa', 3, 8, True)
+TEA = Word('tea', 1, 9, True)
+ROT = Word('rot', 5, 9, True)
+GO = Word('go', 9, 9, True)
+EAST = Word('east', 1, 10, True)
+TOE = Word('toe', 3, 11, True)
+NET2 = Word('net', 7, 11, True)
+
+A0 = Word('a', 0, 7, False)
+A1 = Word('a', 1, 1, False)
+A2 = Word('a', 1, 4, False)
+A3 = Word('a', 2, 10, False)
+A4 = Word('a', 3, 2, False)
+A5 = Word('a', 3, 9, False)
+A6 = Word('a', 4, 8, False)
+A7 = Word('a', 7, 0, False)
+A8 = Word('a', 7, 6, False)
+
+
 BIRTHDAYS = {
     BirthDate(3, 21): CAPN,
     BirthDate(9, 8): BUZZ,
 }
 
 SPECIAL_BIRTHDAY = None
-
-ALL_WORDS = [
-    IT,
-    TWIST,
-    IS,
-    T_HALF,
-    FOR,
-    MASH,
-    AS0,
-    ASH,
-    HAPPY,
-    YET,
-    T_TEN,
-    T_TWENTY,
-    T_FIVE,
-    T_TWENTYFIVE,
-    EAR,
-    T_QUARTER,
-    REPAST,
-    PAST,
-    AS1,
-    ORB,
-    BIRTH,
-    BIRTHDAY,
-    DAY,
-    TO,
-    WON,
-    H_ONE,
-    NET,
-    H_TWO,
-    H_THREE,
-    H_SIX,
-    IF,
-    H_FIVE,
-    H_FOUR,
-    OUR,
-    ABUZZ,
-    BUZZ,
-    CAP,
-    CAPN,
-    H_TEN,
-    H_SEVEN,
-    NOT,
-    H_TWELVE,
-    H_ELEVEN,
-    END,
-    H_EIGHT,
-    H_NINE,
-    NEO,
-    OK,
-    OCLOCK,
-    CLOCK,
-    LOCK,
-]

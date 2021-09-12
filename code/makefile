@@ -1,7 +1,7 @@
 SHELL = /usr/bin/bash
 
 # The base filename of the clock-specific configuration
-CONFIG = config-mb
+CONFIG = mb
 
 # The name of the AWS S3 bucket for logging and updates.
 # Undefine this to disable the cron jobs
@@ -22,7 +22,7 @@ WEB_STATIC_FILES = favicon.ico script.js jquery.min.js w3.css
 WEB_TARGET_FILES = $(WEB_DIR)/body.html $(addprefix $(WEB_STATIC_DIR)/,$(WEB_STATIC_FILES))
 
 PACKAGE = wordclock
-CONFIG_SRC_FILE = config/$(CONFIG).py
+CONFIG_SRC_FILE = config/config_$(CONFIG).py
 CONFIG_FILE = $(PACKAGE)/config.py
 S3_CONFIG_FILE = $(PACKAGE)/s3config.py
 

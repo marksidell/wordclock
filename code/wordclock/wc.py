@@ -34,9 +34,11 @@ import board
 import busio
 import adafruit_veml7700
 
-from wordclock import __version__, config, magnetometer
+from wordclock import __version__, config, magnetometer, configdefs
 
+TEST_POEMS = False
 DO_CALIBRATION = False
+DO_RANDOM_WORD_POEMS = True
 
 HOTSPOT_IP = '10.0.0.1'
 
@@ -44,6 +46,15 @@ COMPASS_JITTER_THRESHOLD = 10
 AMBIENT_SMOOTHING_DEQUE_LEN = 5
 
 LONG_PRESS_DURATION = 3
+
+N_POEM_LINES = 4       # number of lines per poem
+N_POEM_LINE_WORDS = 3  # number of words in a line
+POEM_WORD_PAUSE = 0.25 # pause between words, in seconds
+POEM_LINE_PAUSE = 2    # pause between lines
+POEM_END_PAUSE = 4     # pause at end of poem
+INTER_POEM_PAUSE = 0.5
+
+RANDOM_WORD_PAUSE = 1
 
 SETTINGS_TITLE = '{} Clock'.format(config.CLOCK_NAME)
 
@@ -93,6 +104,64 @@ RANDOM_COLORS = [
     (255, 255, 255),
     ]
 
+
+def is_after(word0, word1):
+    ''' Is word1 after word0 on the grid?
+    '''
+    l_word0 = len(word0.text)
+
+    if word0.vertical:
+        word0_end = word0.y + l_word0
+
+        return (
+            word1.y >= word0.y and word1.y <= word0_end and word1.x > word0.x + 1
+            or word1.y > word0_end)
+
+    word0_end = word0.x + l_word0
+
+    if word1.vertical:
+        return (
+            word1.y == word0.y and word1.x > word0_end
+            or word1.y == word0.y + 1 and (word1.x < word0.x - 1 or word1.x > word0_end)
+            or word1.y > word0.y + 1)
+
+    return (
+        word1.y == word0.y and word1.x > word0_end
+        or word1.y > word0.y)
+
+
+def is_after_no_dup(word0, word1):
+    ''' Is word1 after word0 on the grid, and are the words not the same?
+    '''
+    return word0.text != word1.text and is_after(word0, word1)
+
+
+def init_poems():
+    ''' Calculate poems.
+        Store a list of poems that start with each word.
+        Return a list of all poems, shuffled.
+    '''
+    # All words ordered by their position in the grid, left to right, top to bottom.
+    all_words_in_grid_order = sorted(configdefs.ALL_WORDS, key=lambda x: (x.y, x.x))
+
+    for word0 in all_words_in_grid_order:
+        word0.after = [word1 for word1 in all_words_in_grid_order if is_after_no_dup(word0, word1)]
+
+    for word0 in all_words_in_grid_order:
+        word0.poems = [
+            (word0, word1, word2)
+            for word1 in word0.after
+            for word2 in word1.after
+            if is_after(word0, word2) and word2.text != 'a']
+
+    poems = [poem for word in all_words_in_grid_order for poem in word.poems]
+    random.shuffle(poems)
+    return poems
+
+
+# All four-word poems, in random order
+ALL_POEMS = init_poems()
+
 class State(Enum):
     ''' The operational state
     '''
@@ -124,6 +193,7 @@ PORT_HTTP = 80
 
 FILES_DIR = '/var/wordclock'
 PARAMS_FILE = os.path.join(FILES_DIR, 'params.json')
+WIFI_PARAMS_FILE = os.path.join(FILES_DIR, 'wifi.json')
 BODY_FILE = os.path.join(FILES_DIR, 'website', 'body.html')
 
 # These keys must agree with the corresponding controls on the web page.
@@ -136,11 +206,19 @@ PARAM_MIN_BRIGHTNESS = 'min_brightness'
 PARAM_MAX_LIGHT = 'max_light'
 PARAM_MAX_BRIGHTNESS = 'max_brightness'
 PARAM_SUNRISE = 'sunrise'
+PARAM_POEMS = 'poems'
 
-SUNRISE_LEFT = "left"
-SUNRISE_RIGHT = "right"
-SUNRISE_COMPASS = "compass"
+WIFI_PARAMS = [PARAM_SSID, PARAM_PASSWORD]
+
+SUNRISE_LEFT = 'left'
+SUNRISE_RIGHT = 'right'
+SUNRISE_COMPASS = 'compass'
 DEFAULT_SUNRISE = SUNRISE_COMPASS
+
+POEMS_OFF = 'off'
+POEMS_HOURLY = 'hourly'
+POEMS_RANDOMLY = 'randomly'
+DEFAULT_POEMS = 'randomly'
 
 MAX_LAT = 90
 MAX_LON = 180
@@ -516,9 +594,17 @@ class Main():
         self.cur_angle = self.orientation.angle
         self.sunrise = SUNRISE_LEFT
 
+        self.random_minute = 0
+        self.poem_index = 0
+        self.do_poem = False
+
         self.read_params()
 
         self.pixels = neopixel.NeoPixel(PIN_PIXELS, N_PIXELS, auto_write=False)
+
+        
+        print(f'words={len(configdefs.ALL_WORDS)} poems={len(ALL_POEMS)}')
+
 
     def main(self):
         ''' do it
@@ -569,12 +655,12 @@ class Main():
             PARAM_MAX_LIGHT: DEFAULT_MAX_LIGHT,
             PARAM_MAX_BRIGHTNESS: DEFAULT_MAX_BRIGHTNESS,
             PARAM_SUNRISE: DEFAULT_SUNRISE,
+            PARAM_POEMS: DEFAULT_POEMS,
         }
 
         try:
-            if os.path.isfile(PARAMS_FILE):
-                with open(PARAMS_FILE, 'r') as fil:
-                    self.params.update(json.loads(fil.read()))
+            self.read_params_file(PARAMS_FILE)
+            self.read_params_file(WIFI_PARAMS_FILE)
 
             self.set_timezone()
 
@@ -584,6 +670,23 @@ class Main():
         except Exception as err: #pylint: disable=broad-except
             print('Error reading params:', str(err), flush=True)
             traceback.print_exc()
+
+    def read_params_file(self, path):
+        ''' Read a params file
+        '''
+        if os.path.isfile(path):
+            with open(path, 'r') as fil:
+                self.params.update(json.loads(fil.read()))
+
+    def write_params_file(self, path, filter_func):
+        ''' Write a params file
+        '''
+        with open(path, 'w') as fil:
+            fil.write(
+                json.dumps(
+                    {key: value for key, value in self.params.items()
+                     if filter_func(key)},
+                    indent=2, sort_keys=True))
 
     async def run_http_server(self):
         ''' Run our web server.
@@ -756,8 +859,8 @@ class Main():
 
             self.params.update(data)
 
-            with open(PARAMS_FILE, 'w') as fil:
-                fil.write(json.dumps(self.params, indent=2, sort_keys=True))
+            self.write_params_file(PARAMS_FILE, lambda x: x not in WIFI_PARAMS)
+            self.write_params_file(WIFI_PARAMS_FILE, lambda x: x in WIFI_PARAMS)
 
             running_hotspot = self.state == State.HOTSPOT
             activating_wifi = changed_wifi or running_hotspot
@@ -820,6 +923,7 @@ class Main():
 
                 self.button_presses = 0
                 self.do_birthday = False
+                self.do_poem = False
                 self.update_clock()
 
             await asyncio.sleep(0.1)
@@ -1087,29 +1191,45 @@ class Main():
             await asyncio.sleep(sleep)
 
     async def display_random(self):
-        ''' Update random workds
+        ''' Update random words
         '''
-        random_words = config.ALL_WORDS.copy()
-        random.shuffle(random_words)
+        random_indeces = list(range(len(configdefs.ALL_WORDS)))
+        random.shuffle(random_indeces)
         random_index = 0
+        word_index = 0
 
         while self.display_mode == DisplayMode.RANDOM_WORDS:
             if self.should_run(DisplayMode.RANDOM_WORDS):
-                word = random_words[random_index]
-                random_index = (random_index + 1) % len(random_words)
-
-                if self.args.debug:
-                    print(word.text)
 
                 self.pixels.fill(COLOR_OFF)
-                self.set_word(word, color=random.choice(RANDOM_COLORS))
+                self.set_word_border()
 
-                for i in range(BORDER_PIXELS_BASE, BORDER_PIXELS_END):
-                    self.set_pixel(i, COLOR_RANDOM_BORDER)
+                if word_index == 0:
+                    color = random.choice(RANDOM_COLORS)
+                    word = configdefs.ALL_WORDS[random_indeces[random_index]]
+                    random_index = (random_index + 1) % len(random_indeces)
+                    poem = random.choice(word.poems) if DO_RANDOM_WORD_POEMS and word.poems else []
+
+                    if self.args.debug:
+                        print(word)
+
+                    self.set_word(word, color=color)
+                    sleep_time = RANDOM_WORD_PAUSE
+
+                elif word_index < len(poem):
+                    for poem_word in poem[:word_index+1]:
+                        self.set_word(poem_word, color=color)
+
+                    sleep_time = (
+                        RANDOM_WORD_PAUSE if word_index == len(poem) - 1 else POEM_WORD_PAUSE)
 
                 self.pixels.show()
+                word_index = (word_index + 1) % (len(poem) + 1)
 
-            await asyncio.sleep(1)
+            else:
+                sleep_time = 0.1
+
+            await asyncio.sleep(sleep_time)
 
     async def display_birthday_demo(self):
         ''' Update the clock in demo mode
@@ -1203,16 +1323,35 @@ class Main():
         ''' display the clock
         '''
         self.set_day(now_minute)
+        do_clock = True
 
-        if (self.display_mode == DisplayMode.CLOCK
-                and self.birthday_name
-                and now_minute.minute == 0):
+        if now_minute.minute == 0:
+            self.random_minute = random.randint(0, 59)
 
-            if not self.do_birthday:
-                self.do_birthday = True
-                self.loop.create_task(self.display_birthday())
-        else:
+        if self.display_mode == DisplayMode.CLOCK:
+            if self.birthday_name and now_minute.minute == 0:
+                do_clock = False
+
+                if not self.do_birthday:
+                    self.do_birthday = True
+                    self.loop.create_task(self.display_birthday())
+
+            else:
+                poem_mode = self.params[PARAM_POEMS]
+
+                if (TEST_POEMS or
+                        poem_mode == POEMS_HOURLY and now_minute.minute == 0 or
+                        poem_mode == POEMS_RANDOMLY and now_minute.minute ==  self.random_minute):
+
+                    do_clock = False
+
+                    if not self.do_poem:
+                        self.do_poem = True
+                        self.loop.create_task(self.display_poem())
+
+        if do_clock:
             self.do_birthday = False
+            self.do_poem = False
 
             self.pixels.fill(COLOR_OFF)
             self.write_time(now_minute)
@@ -1311,6 +1450,53 @@ class Main():
 
             await asyncio.sleep(0.1)
 
+    async def display_poem(self):
+        ''' Display a poem
+        '''
+        indeces = None
+        cur_line = 0
+        cur_word = 0
+        color = random.choice(RANDOM_COLORS)
+
+        while self.do_poem:
+            if not self.button_presses:
+                if not indeces:
+                    indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
+
+                self.pixels.fill(COLOR_OFF)
+                self.set_word_border()
+
+                if cur_line != N_POEM_LINES:
+                    for word in ALL_POEMS[indeces[cur_line]][:cur_word+1]:
+                        self.set_word(word, color=color)
+
+                self.pixels.show()
+
+                cur_word += 1
+
+                if cur_word == N_POEM_LINE_WORDS:
+                    cur_word = 0
+                    cur_line += 1
+
+                    if cur_line == N_POEM_LINES:
+                        sleep_time = POEM_END_PAUSE
+
+                        if TEST_POEMS:
+                            indeces = None
+
+                    elif cur_line > N_POEM_LINES:
+                        cur_line = 0
+                        sleep_time = INTER_POEM_PAUSE
+                    else:
+                        sleep_time = POEM_LINE_PAUSE
+                else:
+                    sleep_time = POEM_WORD_PAUSE
+
+            else:
+                sleep_time = 0.1
+
+            await asyncio.sleep(sleep_time)
+
     def set_day(self, now_minute):
         ''' bump the day
         '''
@@ -1341,6 +1527,12 @@ class Main():
         else:
             for x_i in range(word.x, word.x + len(word.text)):
                 self.set_pixel(PIXEL_MAP[x_i][word.y], color)
+
+    def set_word_border(self):
+        ''' Set the border pixels for displaying words and poems
+        '''
+        for i in range(BORDER_PIXELS_BASE, BORDER_PIXELS_END):
+            self.set_pixel(i, COLOR_RANDOM_BORDER)
 
     def set_numeric_pixel(self, index, color):
         ''' Set a numeric pixel
@@ -1461,6 +1653,13 @@ class Main():
         return datetime.datetime.fromtimestamp(
             round((timestamp + offset*60) / (5*60)) * 5*60,
             tz=self.timezone)
+
+    def get_next_poem_index(self):
+        ''' Return the next random poem index
+        '''
+        index = self.poem_index
+        self.poem_index = (self.poem_index + 1) % len(ALL_POEMS)
+        return index
 
 
 def check_wifi(debug):

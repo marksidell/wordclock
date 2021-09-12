@@ -1,4 +1,4 @@
-e<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <title>{title}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +15,7 @@ e<!DOCTYPE html>
 	<div class="w3-cell">
 		<table>
 			<tr>
-				<td><label for="display_mode">Display Mode:&nbsp;</label></td>
+				<td><label for="display_mode"><b>Display Mode:&nbsp;</b></label></td>
 				<td>
 					<select class="w3-input" id="display_mode" name="display_mode" onchange="changeDisplayMode()">
 						<option value="CLOCK">Clock</option>
@@ -25,11 +25,11 @@ e<!DOCTYPE html>
 					</select>
 				</td>
 			</tr>
-			<tr><td>Web Site:&nbsp;</td><td>http://<span id="server_ip"></span></td></tr>
-			<tr><td>Ambient:&nbsp;</td><td><span id="cur_ambient">9943</span> lumens</td></tr>
-			<tr><td>Brightness:&nbsp;</td><td><span id="cur_brightness">99</span> %</td></tr>
-			<tr><td>Up:&nbsp;</td><td><span id="cur_orientation"></span></td></tr>
-			<tr><td>Compass:&nbsp;</td><td><span id="cur_angle"></span> &deg; (Sunrise <span id="sunrise_orientation"></span>)</td></tr>
+			<tr><td><b>Web Site:&nbsp;</b></td><td>http://<span id="server_ip"></span></td></tr>
+			<tr><td><b>Ambient:&nbsp;</b></td><td><span id="cur_ambient">9943</span> lumens</td></tr>
+			<tr><td><b>Brightness:&nbsp;</b></td><td><span id="cur_brightness">99</span> %</td></tr>
+			<tr><td><b>Up:&nbsp;</b></td><td><span id="cur_orientation"></span></td></tr>
+			<tr><td><b>Compass:&nbsp;</b></td><td><span id="cur_angle"></span> &deg; (Sunrise <span id="sunrise_orientation"></span>)</td></tr>
 		</table>
 	</div>
 </div>
@@ -51,6 +51,14 @@ e<!DOCTYPE html>
 		<input class="w3-input w3-border" autocapitalize="off" autocomplete="off" id="password" name="password"
 		  type="text" maxlength="63" onchange=changePassword()>
 		<div hidden id="err_password" class="w3-container w3-red"><span id="errmsg_password"></span></div>
+	</div>
+	<div class="w3-container">
+		<label class="w3-text-blue" for="poems"><b>Be Poetic</b></label>
+		<select class="w3-input w3-border" id="poems" name="sunrise" onchange="changePoems()">
+			<option value="off">Never</option>
+			<option value="randomly">At a random minute each hour</option>
+			<option value="hourly">At the top of each hour</option>
+		</select>
 	</div>
 	<div class="w3-container">
 		<label class="w3-text-blue" for="lat"><b>Latitude</b></label>

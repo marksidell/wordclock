@@ -120,8 +120,8 @@ config_hotspot: $(HOTSPOT)
 
 /root/.aws/credentials:
 	mkdir -p /root/.aws
-	cp aws_credentials /root/.aws
-	chmod 600 /root/.aws/aws_credentials
+	cp aws_credentials /root/.aws/credentials
+	chmod 600 /root/.aws/credentials
 
 /etc/dnsmasq.conf: dnsmasq.conf
 	cp -f $^ $@

@@ -108,8 +108,8 @@ $(HOTSPOT):
 	wget https://raw.githubusercontent.com/rudiratlos/hotspot/master/hotspot; \
 	chmod +x hotspot
 
-.PHONY: config_hotspot $(HOTSPOT)
-config_hotspot:
+.PHONY: config_hotspot
+config_hotspot: $(HOTSPOT)
 	sed '/^ap_net/s/10.3.141/10.0.0/' --in-place $(HOTSPOT)
 	hotspot modpar self aptaddinstlist ""
 	hotspot setup

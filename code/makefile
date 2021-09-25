@@ -49,7 +49,7 @@ all: $(TIMESTAMP_FILE) $(SERVICE_FILE) $(WEB_TARGET_FILES) $(CRON_FILES) $(UPDAT
 # Install all prerequisite packages and do other necessary configuration
 #
 .PHONY: setup
-setup: python3 packages hostname /etc/dnsmasq.conf config_hotspot
+setup: python3 packages hostname /etc/dnsmasq.conf config_hotspot /root/.aws/credentials
 
 # For debugging: (re)install the software and restart the systemd wc service
 #
@@ -117,6 +117,11 @@ config_hotspot: $(HOTSPOT)
 	hotspot modpar hostapd wpa_passphrase wordclock
 	hotspot modpar hostapd country_code US
 	hotspot modpar crda REGDOMAIN US
+
+/root/.aws/credentials:
+	mkdir -p /root/.aws
+	cp aws_credentials /root/.aws
+	chmod 600 /root/.aws/aws_credentials
 
 /etc/dnsmasq.conf: dnsmasq.conf
 	cp -f $^ $@

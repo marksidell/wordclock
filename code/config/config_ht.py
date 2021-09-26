@@ -35,7 +35,6 @@ PYE = Word('pye', 1, 6, False)
 YE = Word('ye', 1, 7, False)
 YET = Word('yet', 1, 7, False)
 T_TEN = Word('ten', 1, 9, False)
-EN = Word('en', 1, 10, False)
 
 T_TWENTY = Word('twenty', 2, 0, False)
 T_TWENTYFIVE = Word('twentyfive', 2, 0, False)

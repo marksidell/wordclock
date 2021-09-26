@@ -33,12 +33,15 @@ import RPi.GPIO as GPIO
 import board
 import busio
 import adafruit_veml7700
+from wpasupplicantconf import WpaSupplicantConf
 
 from wordclock import __version__, config, magnetometer, configdefs
 
 TEST_POEMS = False
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = True
+
+HOLMDELL_SSID = 'holmdell'
 
 HOTSPOT_IP = '10.0.0.1'
 
@@ -347,16 +350,6 @@ def angle_to_pixel(angle):
 
 WPA_SUPPLICANT_CONF_FILE = '/etc/wpa_supplicant/wpa_supplicant.conf'
 
-WPA_SUPPLICATION_CONF_FMT = '''ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=US
-
-network={{
-\tssid="{ssid}"
-\tpsk="{password}"
-\tkey_mgmt=WPA-PSK
-}}
-'''
 
 SunTimes = namedtuple('SunTimes', 'blue_start blue_end golden_start golden_end')
 Sun = namedtuple('Sun', 'sun_pixel, sun_color, sky_color ground_color')
@@ -602,7 +595,6 @@ class Main():
 
         self.pixels = neopixel.NeoPixel(PIN_PIXELS, N_PIXELS, auto_write=False)
 
-        
         print(f'words={len(configdefs.ALL_WORDS)} poems={len(ALL_POEMS)}')
 
 
@@ -1595,13 +1587,23 @@ class Main():
                     self.state = State.ERROR
 
     def configure_wifi(self, ssid, password):
-        ''' Configure and start wifi
+        ''' Configure and start wifi.
+            If the holmdell network is configured, preserve it.
+            Replace any other network definitions with the new ssid and password.
         '''
         if not self.args.daemon:
             print('new wifi settings', ssid, password, flush=True)
 
+        with open(WPA_SUPPLICANT_CONF_FILE, 'r') as fil:
+            wpa = WpaSupplicantConf(fil)
+
+        for network in [ssid for ssid in wpa.networks() if ssid != HOLMDELL_SSID]:
+            wpa.remove_network(network)
+
+        wpa.add_network(ssid, psk='"{password}"', key_mgmt='WPA-PSK')
+
         with open(WPA_SUPPLICANT_CONF_FILE, 'w') as fil:
-            fil.write(WPA_SUPPLICATION_CONF_FMT.format(ssid=ssid, password=password))
+            wpa.write(fil)
 
         self.loop.create_task(self.co_start_wifi())
 

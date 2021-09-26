@@ -11,7 +11,7 @@ APT_PACKAGES = emacs hostapd dnsmasq
 
 PYTHON_PACKAGES = RPI.GPIO adafruit-blinka rpi_ws281x adafruit-circuitpython-neopixel \
 	adafruit-circuitpython-veml7700 adafruit-circuitpython-mlx90393 sparkfun-qwiic-adxl313 \
-	pylint aiohttp timezonefinder pytz astral boto3 geomag
+	pylint aiohttp timezonefinder pytz astral boto3 geomag wpasupplicantconf
 
 VARS_DIR = /var/wordclock
 UPDATES_DIR = $(VARS_DIR)/updates

@@ -1600,7 +1600,7 @@ class Main():
         for network in [ssid for ssid in wpa.networks() if ssid != HOLMDELL_SSID]:
             wpa.remove_network(network)
 
-        wpa.add_network(ssid, psk='"{password}"', key_mgmt='WPA-PSK')
+        wpa.add_network(ssid, psk=f'"{password}"', key_mgmt='WPA-PSK')
 
         with open(WPA_SUPPLICANT_CONF_FILE, 'w') as fil:
             wpa.write(fil)

@@ -120,6 +120,7 @@ config_hotspot: $(HOTSPOT)
 
 /root/.aws/credentials:
 	mkdir -p /root/.aws
+	chmod 750 /root/.aws
 	cp aws_credentials /root/.aws/credentials
 	chmod 600 /root/.aws/credentials
 

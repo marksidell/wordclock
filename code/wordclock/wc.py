@@ -50,16 +50,15 @@ AMBIENT_SMOOTHING_DEQUE_LEN = 5
 
 LONG_PRESS_DURATION = 3
 
-# These times are set so that the total time for one poem is 12
-# seconds, allowing exactly 5 iterations in a minute.
+# These times are set so that the total time for one poem is 15
+# seconds, allowing exactly 4 iterations in a minute.
 #
 N_POEM_LINES = 4       # number of lines per poem
 N_POEM_LINE_WORDS = 3  # number of words in a line
 POEM_WORD_PAUSE = 0.25 # pause between words, in seconds  * 2 * 4 =  2
-POEM_LINE_PAUSE = 2    # pause between lines              * 3     =  6
-POEM_END_PAUSE = 3.5   # pause at end of poem             * 1     =  3.5
-INTER_POEM_PAUSE = 0.5 #                                  * 1     =  0.5
-                       #                                          = 12.0
+POEM_LINE_PAUSE = 2.5  # pause between lines              * 3     =  7.5
+POEM_END_PAUSE = 4     # pause at end of poem             * 1     =  4
+POEM_DURATION = 15
 
 RANDOM_WORD_PAUSE = 1
 
@@ -1446,19 +1445,22 @@ class Main():
 
             await asyncio.sleep(0.1)
 
+    def get_next_poem_indeces(self):
+        ''' Return the lines of the next pome
+        '''
+        return [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
+        
     async def display_poem(self):
         ''' Display a poem
         '''
-        indeces = None
+        indeces = self.get_next_poem_indeces()
         cur_line = 0
         cur_word = 0
         color = random.choice(RANDOM_COLORS)
+        poem_start = time.time()
 
         while self.do_poem:
             if not self.button_presses:
-                if not indeces:
-                    indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
-
                 self.pixels.fill(COLOR_OFF)
                 self.set_word_border()
 
@@ -1477,14 +1479,16 @@ class Main():
                         sleep_time = POEM_END_PAUSE
 
                         if TEST_POEMS:
-                            indeces = None
+                            indeces = self.get_next_poem_indeces()
 
                     else:
                         cur_word = 0
 
                         if cur_line > N_POEM_LINES:
                             cur_line = 0
-                            sleep_time = INTER_POEM_PAUSE
+                            now = time.time()
+                            sleep_time = max(0, now - (poem_start + POEM_DURATION))
+                            poem_start = now
                         else:
                             sleep_time = POEM_LINE_PAUSE
                 else:

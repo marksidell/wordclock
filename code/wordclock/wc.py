@@ -50,12 +50,16 @@ AMBIENT_SMOOTHING_DEQUE_LEN = 5
 
 LONG_PRESS_DURATION = 3
 
+# These times are set so that the total time for one poem is 12
+# seconds, allowing exactly 5 iterations in a minute.
+#
 N_POEM_LINES = 4       # number of lines per poem
 N_POEM_LINE_WORDS = 3  # number of words in a line
-POEM_WORD_PAUSE = 0.25 # pause between words, in seconds
-POEM_LINE_PAUSE = 2    # pause between lines
-POEM_END_PAUSE = 4     # pause at end of poem
-INTER_POEM_PAUSE = 0.5
+POEM_WORD_PAUSE = 0.25 # pause between words, in seconds  * 2 * 4 =  2
+POEM_LINE_PAUSE = 2    # pause between lines              * 3     =  6
+POEM_END_PAUSE = 3.5   # pause at end of poem             * 1     =  3.5
+INTER_POEM_PAUSE = 0.5 #                                  * 1     =  0.5
+                       #                                          = 12.0
 
 RANDOM_WORD_PAUSE = 1
 
@@ -1466,8 +1470,7 @@ class Main():
 
                 cur_word += 1
 
-                if cur_word == N_POEM_LINE_WORDS:
-                    cur_word = 0
+                if cur_word >= N_POEM_LINE_WORDS:
                     cur_line += 1
 
                     if cur_line == N_POEM_LINES:
@@ -1476,11 +1479,14 @@ class Main():
                         if TEST_POEMS:
                             indeces = None
 
-                    elif cur_line > N_POEM_LINES:
-                        cur_line = 0
-                        sleep_time = INTER_POEM_PAUSE
                     else:
-                        sleep_time = POEM_LINE_PAUSE
+                        cur_word = 0
+
+                        if cur_line > N_POEM_LINES:
+                            cur_line = 0
+                            sleep_time = INTER_POEM_PAUSE
+                        else:
+                            sleep_time = POEM_LINE_PAUSE
                 else:
                     sleep_time = POEM_WORD_PAUSE
 

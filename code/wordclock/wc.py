@@ -37,7 +37,8 @@ from wpasupplicantconf import WpaSupplicantConf
 
 from wordclock import __version__, config, magnetometer, configdefs
 
-TEST_POEMS = False
+#TEST_POEMS = False
+TEST_POEMS = True
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = True
 
@@ -58,7 +59,7 @@ N_POEM_LINE_WORDS = 3  # number of words in a line
 POEM_WORD_PAUSE = 0.25 # pause between words, in seconds  * 2 * 4 =  2
 POEM_LINE_PAUSE = 2.5  # pause between lines              * 3     =  7.5
 POEM_END_PAUSE = 4     # pause at end of poem             * 1     =  4
-POEM_DURATION = 15
+POEM_DURATION = 15     # This causes the inter-poem time to be about 1.5 seconds
 
 RANDOM_WORD_PAUSE = 1
 
@@ -1476,6 +1477,7 @@ class Main():
                     cur_line += 1
 
                     if cur_line == N_POEM_LINES:
+                        print('end', time.time() - poem_start)
                         sleep_time = POEM_END_PAUSE
 
                         if TEST_POEMS:
@@ -1488,10 +1490,13 @@ class Main():
                             cur_line = 0
                             now = time.time()
                             sleep_time = max(0, now - (poem_start + POEM_DURATION))
+                            print('inter', sleep_time)
                             poem_start = now
                         else:
+                            print('line', time.time() - poem_start)
                             sleep_time = POEM_LINE_PAUSE
                 else:
+                    print('word', time.time() - poem_start)
                     sleep_time = POEM_WORD_PAUSE
 
             else:

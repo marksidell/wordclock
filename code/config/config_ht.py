@@ -187,3 +187,5 @@ BIRTHDAYS = {
     BirthDate(12, 18): HANS,
     BirthDate(12, 21): TOMOMI,
 }
+
+SPECIAL_BIRTHDAY = None

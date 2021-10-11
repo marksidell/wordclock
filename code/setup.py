@@ -16,6 +16,7 @@ setup(
             "calibrate=wordclock.calibrate:main",
             "tneo=wordclock.tneo:main",
             "tsense=wordclock.tsense:main",
+            "twords=wordclock.twords:main",
             "wc=wordclock.wc:main",
             "send-log=wordclock.send_log:main",
             "get-update=wordclock.get_update:main",

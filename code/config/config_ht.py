@@ -4,7 +4,7 @@ Configuration for the Hans & Tomomi clock
 
 from wordclock.configdefs import Word, BirthDate
 
-VERSION_2 = False
+VERSION_2 = True
 
 CLOCK_NAME = 'Hans &amp; Tomomi'
 

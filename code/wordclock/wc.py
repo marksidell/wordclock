@@ -40,7 +40,8 @@ from wordclock import __version__, config, magnetometer, configdefs
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = True
 
-HOLMDELL_SSID = 'holmdell'
+#HOLMDELL_SSID = 'holmdell'
+HOLMDELL_SSID = None
 
 HOTSPOT_IP = '10.0.0.1'
 

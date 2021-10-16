@@ -11,7 +11,7 @@ from wordclock import configdefs
 
 PIN_PIXELS = board.D18
 DIM = 12
-N_PIXELS = DIM*DIM
+N_PIXELS = DIM*DIM + 24 * 4
 
 COLOR_OFF = (0, 0, 0)
 COLOR_ON = (255, 255, 255)
@@ -53,7 +53,7 @@ def main():
                 pixels.fill(COLOR_OFF)
                 set_word(word)
                 pixels.show()
-                prompt = f'{word.text} {word.x} {word.y}'
+                prompt = f'{word.text} {word.y} {word.x}'
 
                 if args.auto:
                     print(prompt)

@@ -33,12 +33,15 @@ import RPi.GPIO as GPIO
 import board
 import busio
 import adafruit_veml7700
+from wpasupplicantconf import WpaSupplicantConf
 
 from wordclock import __version__, config, magnetometer, configdefs
 
-TEST_POEMS = False
 DO_CALIBRATION = False
 DO_RANDOM_WORD_POEMS = True
+
+#HOLMDELL_SSID = 'holmdell'
+HOLMDELL_SSID = None
 
 HOTSPOT_IP = '10.0.0.1'
 
@@ -47,12 +50,15 @@ AMBIENT_SMOOTHING_DEQUE_LEN = 5
 
 LONG_PRESS_DURATION = 3
 
+# These times are set so that the total time for one poem is 15
+# seconds, allowing exactly 4 iterations in a minute.
+#
 N_POEM_LINES = 4       # number of lines per poem
 N_POEM_LINE_WORDS = 3  # number of words in a line
-POEM_WORD_PAUSE = 0.25 # pause between words, in seconds
-POEM_LINE_PAUSE = 2    # pause between lines
-POEM_END_PAUSE = 4     # pause at end of poem
-INTER_POEM_PAUSE = 0.5
+POEM_WORD_PAUSE = 0.25 # pause between words, in seconds  * 2 * 4 =  2
+POEM_LINE_PAUSE = 2    # pause between lines              * 3     =  6
+POEM_END_PAUSE = 4     # pause at end of poem             * 1     =  4
+POEM_DURATION = 15     # This causes the inter-poem time to be about 1.5 seconds
 
 RANDOM_WORD_PAUSE = 1
 
@@ -347,16 +353,6 @@ def angle_to_pixel(angle):
 
 WPA_SUPPLICANT_CONF_FILE = '/etc/wpa_supplicant/wpa_supplicant.conf'
 
-WPA_SUPPLICATION_CONF_FMT = '''ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=US
-
-network={{
-\tssid="{ssid}"
-\tpsk="{password}"
-\tkey_mgmt=WPA-PSK
-}}
-'''
 
 SunTimes = namedtuple('SunTimes', 'blue_start blue_end golden_start golden_end')
 Sun = namedtuple('Sun', 'sun_pixel, sun_color, sky_color ground_color')
@@ -546,6 +542,12 @@ def parse_args():
         default=False,
         help='Print verbose debugging statements')
 
+    parser.add_argument(
+        '--test-poems',
+        action='store_true',
+        default=False,
+        help='Run poem mode continuously')
+
     return parser.parse_args()
 
 
@@ -602,7 +604,6 @@ class Main():
 
         self.pixels = neopixel.NeoPixel(PIN_PIXELS, N_PIXELS, auto_write=False)
 
-        
         print(f'words={len(configdefs.ALL_WORDS)} poems={len(ALL_POEMS)}')
 
 
@@ -663,9 +664,7 @@ class Main():
             self.read_params_file(WIFI_PARAMS_FILE)
 
             self.set_timezone()
-
-            if self.args.debug:
-                print(self.params)
+            self.print_debug(self.params)
 
         except Exception as err: #pylint: disable=broad-except
             print('Error reading params:', str(err), flush=True)
@@ -711,8 +710,7 @@ class Main():
     async def handle_get_body(self, _request):
         ''' handle web get main body
         '''
-        if self.args.debug:
-            print('send body')
+        self.print_debug('send body')
 
         with open(BODY_FILE, 'r') as fil:
             body = fil.read()
@@ -747,8 +745,7 @@ class Main():
                 version=__version__,
             ))
 
-        if self.args.debug:
-            print('send vars:\n{}'.format(js_vars))
+        self.print_debug('send vars:\n{}'.format(js_vars))
 
         return web.Response(content_type='text/javascript', text=js_vars)
 
@@ -758,9 +755,7 @@ class Main():
         data = await get_request_data(request)
 
         if data:
-            if self.args.debug:
-                print('save:', data)
-
+            self.print_debug('save:', data)
             return self.do_config_save(data)
 
         raise web.HTTPBadRequest()
@@ -771,9 +766,7 @@ class Main():
         data = await get_request_data(request)
 
         if data:
-            if self.args.debug:
-                print('mode:', data)
-
+            self.print_debug('mode:', data)
             new_mode = DisplayMode[data.get('display_mode')]
 
             if self.display_mode != new_mode:
@@ -794,8 +787,7 @@ class Main():
             display_mode=self.display_mode.name,
             sunrise_orientation=self.get_compass_sunrise())
 
-        if self.args.debug:
-            print('state:', state)
+        self.print_debug('state:', state)
 
         return web.json_response(state)
 
@@ -805,8 +797,7 @@ class Main():
         data = await get_request_data(request)
 
         if bool(data):
-            if self.args.debug:
-                print('futz:', data)
+            self.print_debug('futz:', data)
 
             self.futzing = True
             self.last_ping = time.time()
@@ -826,9 +817,7 @@ class Main():
         ''' handle web ajax get ping request (to keep futz mode alive)
         '''
         self.last_ping = time.time()
-
-        if self.args.debug:
-            print('ping', self.futzing, self.last_ping)
+        self.print_debug('ping', self.futzing, self.last_ping)
 
         # Tell the browser to stop, except on the very first ping
         return web.json_response(dict(ok=self.futzing or self.last_ping is None))
@@ -906,8 +895,7 @@ class Main():
             if (not self.button_down_time and self.button_presses and
                     time.time() - self.button_up_time > 1):
 
-                if self.args.debug:
-                    print('button presses', self.button_presses, flush=True)
+                self.print_debug('button presses', self.button_presses)
 
                 if self.button_presses == 1:
                     self.do_button_press_1()
@@ -944,8 +932,7 @@ class Main():
         ''' Handle a single button press
         '''
         if self.button_duration >= LONG_PRESS_DURATION:
-            if self.args.debug:
-                print('long press', flush=True)
+            self.print_debug('long press')
             self.display_mode = DisplayMode.CLOCK
             self.start_hotspot_event.set()
         else:
@@ -970,9 +957,7 @@ class Main():
         while True:
             if self.state in [State.WIFI_INIT, State.WIFI_ACTIVE]:
 
-                if self.args.debug:
-                    print('checking wifi', self.state, flush=True)
-
+                self.print_debug('checking wifi', self.state)
                 self.server_ip = await self.loop.run_in_executor(None, check_wifi, self.args.debug)
 
                 if self.server_ip:
@@ -1210,8 +1195,7 @@ class Main():
                     random_index = (random_index + 1) % len(random_indeces)
                     poem = random.choice(word.poems) if DO_RANDOM_WORD_POEMS and word.poems else []
 
-                    if self.args.debug:
-                        print(word)
+                    self.print_debug(word)
 
                     self.set_word(word, color=color)
                     sleep_time = RANDOM_WORD_PAUSE
@@ -1311,8 +1295,7 @@ class Main():
         now = datetime.datetime.now(self.timezone)
         now_minute = now.replace(second=0, microsecond=0)
 
-        if self.args.debug:
-            print('clock', now, now_minute, flush=True)
+        self.print_debug('clock', now, now_minute)
 
         if self.should_run(DisplayMode.CLOCK):
             self.write_clock(now_minute)
@@ -1339,9 +1322,9 @@ class Main():
             else:
                 poem_mode = self.params[PARAM_POEMS]
 
-                if (TEST_POEMS or
+                if (self.args.test_poems or
                         poem_mode == POEMS_HOURLY and now_minute.minute == 0 or
-                        poem_mode == POEMS_RANDOMLY and now_minute.minute ==  self.random_minute):
+                        poem_mode == POEMS_RANDOMLY and now_minute.minute == self.random_minute):
 
                     do_clock = False
 
@@ -1450,19 +1433,22 @@ class Main():
 
             await asyncio.sleep(0.1)
 
+    def get_next_poem_indeces(self):
+        ''' Return the lines of the next pome
+        '''
+        return [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
+
     async def display_poem(self):
         ''' Display a poem
         '''
-        indeces = None
+        indeces = self.get_next_poem_indeces()
         cur_line = 0
         cur_word = 0
         color = random.choice(RANDOM_COLORS)
+        poem_start = time.time()
 
         while self.do_poem:
             if not self.button_presses:
-                if not indeces:
-                    indeces = [self.get_next_poem_index() for _ in range(N_POEM_LINES)]
-
                 self.pixels.fill(COLOR_OFF)
                 self.set_word_border()
 
@@ -1474,22 +1460,34 @@ class Main():
 
                 cur_word += 1
 
-                if cur_word == N_POEM_LINE_WORDS:
-                    cur_word = 0
+                if cur_word >= N_POEM_LINE_WORDS:
                     cur_line += 1
 
                     if cur_line == N_POEM_LINES:
+                        self.print_debug(
+                            'end', time.time() - poem_start, force=self.args.test_poems)
                         sleep_time = POEM_END_PAUSE
 
-                        if TEST_POEMS:
-                            indeces = None
+                        if self.args.test_poems:
+                            indeces = self.get_next_poem_indeces()
 
-                    elif cur_line > N_POEM_LINES:
-                        cur_line = 0
-                        sleep_time = INTER_POEM_PAUSE
                     else:
-                        sleep_time = POEM_LINE_PAUSE
+                        cur_word = 0
+
+                        if cur_line > N_POEM_LINES:
+                            cur_line = 0
+                            now = time.time()
+                            sleep_time = max(0, poem_start + POEM_DURATION - now)
+                            self.print_debug(
+                                'inter', now - poem_start, sleep_time, force=self.args.test_poems)
+                            poem_start = now + sleep_time
+                        else:
+                            self.print_debug(
+                                'line', time.time() - poem_start, force=self.args.test_poems)
+                            sleep_time = POEM_LINE_PAUSE
                 else:
+                    self.print_debug(
+                        'word', time.time() - poem_start, force=self.args.test_poems)
                     sleep_time = POEM_WORD_PAUSE
 
             else:
@@ -1574,12 +1572,10 @@ class Main():
             if self.button_presses < 4:
                 self.button_presses += 1
 
-            if self.args.debug:
-                print('up', self.button_presses, now, self.button_duration, flush=True)
+            self.print_debug('up', self.button_presses, now, self.button_duration)
         else:
             self.button_down_time = now
-            if self.args.debug:
-                print('down', self.button_down_time, flush=True)
+            self.print_debug('down', self.button_down_time)
 
     async def handle_start_hotspot_event(self):
         ''' Start the hotspot in a background thread
@@ -1595,13 +1591,23 @@ class Main():
                     self.state = State.ERROR
 
     def configure_wifi(self, ssid, password):
-        ''' Configure and start wifi
+        ''' Configure and start wifi.
+            If the holmdell network is configured, preserve it.
+            Replace any other network definitions with the new ssid and password.
         '''
         if not self.args.daemon:
             print('new wifi settings', ssid, password, flush=True)
 
+        with open(WPA_SUPPLICANT_CONF_FILE, 'r') as fil:
+            wpa = WpaSupplicantConf(fil)
+
+        for network in [ssid for ssid in wpa.networks() if ssid != HOLMDELL_SSID]:
+            wpa.remove_network(network)
+
+        wpa.add_network(ssid, psk=f'"{password}"', key_mgmt='WPA-PSK')
+
         with open(WPA_SUPPLICANT_CONF_FILE, 'w') as fil:
-            fil.write(WPA_SUPPLICATION_CONF_FMT.format(ssid=ssid, password=password))
+            wpa.write(fil)
 
         self.loop.create_task(self.co_start_wifi())
 
@@ -1660,6 +1666,12 @@ class Main():
         index = self.poem_index
         self.poem_index = (self.poem_index + 1) % len(ALL_POEMS)
         return index
+
+    def print_debug(self, *argv, force=False):
+        ''' Print a message if in debug mode
+        '''
+        if self.args.debug or force:
+            print(*argv, flush=True)
 
 
 def check_wifi(debug):

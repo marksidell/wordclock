@@ -116,23 +116,18 @@ EVE_1 = Word('eve', 7, 0, True)
 EVEN_1 = Word('even', 7, 0, True)
 
 TAW = Word('taw', 0, 1, True)
-A_9 = Word('a', 1, 1, True)
 AW = Word('aw', 1, 1, True)
-A_10 = Word('a', 6, 1, True)
 ALE = Word('ale', 6, 1, True)
 
 SEA = Word('sea', 1, 2, True)
-A_11 = Word('a', 3, 2, True)
 H_TEN = Word('ten', 8, 2, True)
 
 SAT = Word('sat', 0, 4, True)
-A_12 = Word('a', 1, 4, True)
 AT = Word('at', 1, 4, True)
 
 PYE_1 = Word('pye', 1, 5, True)
 YE_1 = Word('ye', 2, 5, True)
 YET_1 = Word('yet', 2, 5, True)
-A_13 = Word('a', 7, 5, True)
 AN = Word('an', 7, 5, True)
 ANN = Word('ann', 7, 5, True)
 
@@ -141,19 +136,15 @@ HOE = Word('hoe', 4, 6, True)
 HE_1 = Word('he', 7, 6, True)
 TO_1 = Word('to', 9, 6, True)
 
-A_14 = Word('a', 0, 7, True)
 LET = Word('let', 6, 7, True)
 
 PAR = Word('par', 3, 8, True)
-A_15 = Word('a', 4, 8, True)
 HE_2 = Word('he', 8, 8, True)
 
 TEA = Word('tea', 1, 9, True)
-A_16 = Word('a', 3, 9, True)
 LO_1 = Word('lo', 9, 9, True)
 
 EAST = Word('east', 1, 10, True)
-A_17 = Word('a', 2, 10, True)
 AS_2 = Word('as', 2, 10, True)
 OH = Word('oh', 6, 10, True)
 HE_3 = Word('he', 7, 10, True)

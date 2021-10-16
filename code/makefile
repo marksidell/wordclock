@@ -11,7 +11,7 @@ APT_PACKAGES = emacs hostapd dnsmasq
 
 PYTHON_PACKAGES = RPI.GPIO adafruit-blinka rpi_ws281x adafruit-circuitpython-neopixel \
 	adafruit-circuitpython-veml7700 adafruit-circuitpython-mlx90393 sparkfun-qwiic-adxl313 \
-	pylint aiohttp timezonefinder pytz astral boto3 geomag
+	pylint aiohttp timezonefinder pytz astral boto3 geomag wpasupplicantconf
 
 VARS_DIR = /var/wordclock
 UPDATES_DIR = $(VARS_DIR)/updates
@@ -49,7 +49,7 @@ all: $(TIMESTAMP_FILE) $(SERVICE_FILE) $(WEB_TARGET_FILES) $(CRON_FILES) $(UPDAT
 # Install all prerequisite packages and do other necessary configuration
 #
 .PHONY: setup
-setup: python3 packages hostname /etc/dnsmasq.conf config_hotspot
+setup: python3 packages hostname /etc/dnsmasq.conf config_hotspot /root/.aws/credentials
 
 # For debugging: (re)install the software and restart the systemd wc service
 #
@@ -108,8 +108,8 @@ $(HOTSPOT):
 	wget https://raw.githubusercontent.com/rudiratlos/hotspot/master/hotspot; \
 	chmod +x hotspot
 
-.PHONY: config_hotspot $(HOTSPOT)
-config_hotspot:
+.PHONY: config_hotspot
+config_hotspot: $(HOTSPOT)
 	sed '/^ap_net/s/10.3.141/10.0.0/' --in-place $(HOTSPOT)
 	hotspot modpar self aptaddinstlist ""
 	hotspot setup
@@ -117,6 +117,12 @@ config_hotspot:
 	hotspot modpar hostapd wpa_passphrase wordclock
 	hotspot modpar hostapd country_code US
 	hotspot modpar crda REGDOMAIN US
+
+/root/.aws/credentials:
+	mkdir -p /root/.aws
+	chmod 750 /root/.aws
+	cp aws_credentials /root/.aws/credentials
+	chmod 600 /root/.aws/credentials
 
 /etc/dnsmasq.conf: dnsmasq.conf
 	cp -f $^ $@

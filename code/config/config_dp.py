@@ -163,8 +163,8 @@ EX = Word('ex', 5, 11, True)
 
 BIRTHDAYS = {
     BirthDate(1, 31): DOUG,
-    BirthDate(12, 21): PATY,
-    BirthDate(12, 21): LUCAS,
+    BirthDate(4, 22): PATY,
+    BirthDate(4, 1): LUCAS,
 }
 
 SPECIAL_BIRTHDAY = None

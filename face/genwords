@@ -19,17 +19,104 @@ HOURS = [
 SPECIAL_WORDS = [
     'twentyfive', 'oclock']
 
+BAD_WORDS = set([
+    'st',
+    'al',
+    'fo',
+    'mas',
+    'sh',
+    'pp',
+    'et',
+    'en',
+    'en',
+    'iv',
+    'ea',
+    'ar',
+    'qu',
+    'ar',
+    'rt',
+    'rte',
+    'ter',
+    'er',
+    'st',
+    'bi',
+    'rt',
+    'hd',
+    'ne',
+    'et',
+    'wo',
+    'hr',
+    're',
+    'fo',
+    'iv',
+    'es',
+    'ix',
+    'ht',
+    'gt',
+    'en',
+    'ca',
+    'es',
+    'en',
+    'el',
+    'lv',
+    'ne',
+    'cl',
+    'ck',
+    'mt',
+    'el',
+    'elev',
+    'lev',
+    'en',
+    'ps',
+    'psi',
+    'ea',
+    'ab',
+    'ae',
+    'en',
+    'nr',
+    'ht',
+    'att',
+    'tr',
+    'rt',
+    'tr',
+    'rt',
+    'et',
+    'hp',
+    'pf',
+    'fr',
+    'oi',
+    'ut',
+    'ed',
+    'cw',
+    'pah',
+    'ae',
+    'el',
+    'ft',
+    'ea',
+    'yr',
+    'yrs',
+    'rs',
+    'st',
+    'ts',
+    'nr',
+    'rt',
+    're',
+    'st',
+    'ea',
+    'av',
+    ])
+
 HOURS_ROW = 5
 
 
 def add_word(all_words, names, my_words, row, col, vertical, word):
     ''' Maybe add a word
     '''
-    if (len(word) > 1 and (
+    if (len(word) > 1 and word not in BAD_WORDS and (
             word in SPECIAL_WORDS or
             word in names or
             all_words.check(word))
-            or word == 'a'):
+            or word == 'a' and not vertical):
 
         word_u = word.upper()
         index = my_words[word]
@@ -60,6 +147,7 @@ def main():
         print('ERROR: The grid is not square')
         sys.exit(1)
 
+    names = [name.lower() for name in args.names]
     all_words = enchant.Dict('en_US')
     my_words = defaultdict(int)
 
@@ -67,7 +155,7 @@ def main():
         for col in range(dim):
             for j in range(col+1, dim+1):
                 add_word(
-                    all_words, args.names, my_words, row, col, False, grid[row][col:j])
+                    all_words, names, my_words, row, col, False, grid[row][col:j])
 
         print('')
 
@@ -75,7 +163,7 @@ def main():
         for row in range(dim - 1):
             for j in range(row+1, dim):
                 add_word(
-                    all_words, args.names, my_words, row, col, True,
+                    all_words, names, my_words, row, col, True,
                     ''.join([grid[i][col] for i in range(row, j)]))
 
         print('')

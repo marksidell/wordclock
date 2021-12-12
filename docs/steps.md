@@ -84,7 +84,9 @@ SD card.
 
 16. Install the software, where `<xx>` is the two-letter config name for this clock.
     ```
+    # This step is probably not necessary
     rm /vars/wordclock/params.json
+
 	 cd /home/pi/wordclock/code
     make CONFIG=<xx>
     ```
@@ -117,6 +119,8 @@ Solder the cable to the bottom PCB.
 
 10. Glue the top and bottom PCBs to the back panel. Use four drops of medium-vicosity superglue,
 at points where there are no PCB through-holes. Secure with four small clamps.
+
+10. Secure the three-wire jumper cable to the bottom PCB with a dab of hot glue.
 
 10. Cut the four-wire level converter jumper cable. 155 mm. Solder it to the level converter.
 
@@ -162,14 +166,17 @@ Check all connections for shorts and for connectivity to the strips.
 
 22. Solder wires to the border PCB and then solder the PCB to the neopixel strip.
 The PCB sits on top of the neopixels, facing down. The wires leave the *front* of the PCB.
+See [Border PCB](https://photos.app.goo.gl/wNSTMZ44nTu5heG16).
 
 23. With the back panel clamped *face up*, glue on the border neopixels. Medium viscosity.
+See [Attaching border pixels](https://photos.app.goo.gl/Qw9Kop7GaBzFSAUHA).
 
 24. Solder the border pixel wires to the bottom strip.
+See [Border pixel wiring](https://photos.app.goo.gl/Ag3d7LAccuLykpyG8).
 
 25. Hook up the electronics and test all pixels.
 
-17. Mount the brackets:
+17. Mount the brackets. See [Mounting brackets](https://photos.app.goo.gl/3VDmyGYpLevs3Q7WA).
 
     1. Angle the back panel on the multifunction table so that holes
        are close enough to clamp the bracket jig.

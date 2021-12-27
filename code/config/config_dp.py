@@ -79,7 +79,6 @@ FOU = Word('fou', 6, 1, False)
 H_FOUR = Word('four', 6, 1, False)
 OUR = Word('our', 6, 2, False)
 H_FIVE = Word('five', 6, 5, False)
-FIVES = Word('fives', 6, 5, False)
 SI = Word('si', 6, 9, False)
 H_SIX = Word('six', 6, 9, False)
 
@@ -138,7 +137,6 @@ YE_1 = Word('ye', 8, 4, True)
 PYE_1 = Word('pye', 1, 5, True)
 YE_2 = Word('ye', 2, 5, True)
 YET_1 = Word('yet', 2, 5, True)
-LN = Word('ln', 8, 5, True)
 
 RHO = Word('rho', 3, 6, True)
 HO = Word('ho', 4, 6, True)
@@ -152,13 +150,11 @@ HE = Word('he', 5, 8, True)
 TEA = Word('tea', 1, 9, True)
 LO_1 = Word('lo', 9, 9, True)
 
-EA_3 = Word('ea', 1, 10, True)
 EAST = Word('east', 1, 10, True)
 AS_3 = Word('as', 2, 10, True)
 
 TO_2 = Word('to', 3, 11, True)
 TOE = Word('toe', 3, 11, True)
-EX = Word('ex', 5, 11, True)
 
 
 BIRTHDAYS = {

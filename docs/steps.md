@@ -75,7 +75,8 @@ SD card.
 
 9. Change the pi passwd.
 
-10. Shutdown the pi. Remove the SD card and use Win32 Disk Imager to snapshot it to `baseline.img`.
+10. Shutdown the pi. Remove the SD card and use Win32 Disk Imager to
+snapshot it to the `baseline.img` in \\ruxton\share\wordclock folder.
 
 ## Installing and Configuring the Software
 

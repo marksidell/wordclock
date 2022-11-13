@@ -8,7 +8,7 @@ The S3 objects have names of the form:
   update/<username>/update-<yyyy><mm><dd><nn>.tgz
 
 The <username> is the IAM username used by the clock to
-authenticate to AWS.
+authenticate to AWS, and are of the form "wordclock-<xx>".
 
 We record which updates have been done, by creating local
 directories with names of the form:
